@@ -2,6 +2,12 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # Fait confiance au proxy immédiat (Traefik, dans l'infra symfony_env) pour
+    # les en-têtes X-Forwarded-* : sans ça, Symfony croit être servi en HTTP
+    # (le conteneur ne voit que du trafic HTTP en interne, Traefik terminant le
+    # TLS), ce qui casse les URLs canoniques/SEO et la validation CSRF.
+    trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 

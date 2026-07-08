@@ -1,0 +1,16 @@
+# Overrides production, à combiner explicitement avec compose.yaml (les -f
+# explicites désactivent l'auto-chargement de compose.override.yaml) :
+#   docker compose --env-file .env.docker -f compose.yaml -f compose.prod.yaml up -d
+services:
+  app:
+    # Le code est intégré à l'image en prod (pas de bind-mount) : .env.local
+    # n'est donc plus lu depuis le disque par le dotenv de Symfony comme en
+    # dev. On l'injecte comme variables d'environnement du conteneur à la
+    # place (fichier non versionné, jamais copié dans l'image).
+    env_file:
+      - .env.local
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M

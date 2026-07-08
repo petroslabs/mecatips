@@ -1,18 +1,9 @@
-
+# Chargé automatiquement par `docker compose` (sans -f) : bascule le service
+# sur le stage de dev (pas de code intégré à l'image) et monte le code de
+# l'hôte pour le hot-reload, sans rebuild à chaque changement.
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
-
-###> symfony/mailer ###
-  mailer:
-    image: axllent/mailpit
-    ports:
-      - "1025"
-      - "8025"
-    environment:
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
-###< symfony/mailer ###
+  app:
+    build:
+      target: frankenphp_dev
+    volumes:
+      - ./:/app

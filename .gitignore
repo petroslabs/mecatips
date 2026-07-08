@@ -18,3 +18,9 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# IDE
+/.idea/
+
+# Docker Compose (variables locales/prod, cf. .env.docker.example)
+/.env.docker

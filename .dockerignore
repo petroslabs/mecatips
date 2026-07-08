@@ -1,0 +1,11 @@
+.git
+.idea
+var/
+vendor/
+public/assets/
+assets/vendor/
+.env.local
+.env.local.php
+.env.*.local
+Dockerfile
+compose*.yaml
