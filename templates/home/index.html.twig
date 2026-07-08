@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MécaTips — les tips de terrain de la mécanique{% endblock %}
+
+{% block body %}
+    <h1>MécaTips</h1>
+    <p>Les petits conseils d'atelier qu'on ne trouve pas dans les tutos — recensés et vérifiés par un comité de mécaniciens.</p>
+
+    {% if app.user %}
+        <p>Bienvenue, <strong>{{ app.user.pseudo }}</strong>.</p>
+    {% else %}
+        <p><a href="{{ path('registration') }}" class="btn">Créer un compte</a></p>
+    {% endif %}
+{% endblock %}
