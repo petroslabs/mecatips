@@ -17,11 +17,16 @@ class Vehicle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
-    private string $make;
+    // Nullable : le formulaire de soumission de tip n'expose qu'un champ de
+    // recherche libre sur `label` (pas de cascade marque/modèle/moteur — voir
+    // ROADMAP.md). Un véhicule proposé depuis ce flux n'a donc pas forcément
+    // make/model renseignés ; c'est à l'outil de dédoublonnage admin (à
+    // venir) de les compléter.
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $make = null;
 
-    #[ORM\Column(length: 100)]
-    private string $model;
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $model = null;
 
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $engine = null;
@@ -49,24 +54,24 @@ class Vehicle
         return $this->id;
     }
 
-    public function getMake(): string
+    public function getMake(): ?string
     {
         return $this->make;
     }
 
-    public function setMake(string $make): static
+    public function setMake(?string $make): static
     {
         $this->make = $make;
 
         return $this;
     }
 
-    public function getModel(): string
+    public function getModel(): ?string
     {
         return $this->model;
     }
 
-    public function setModel(string $model): static
+    public function setModel(?string $model): static
     {
         $this->model = $model;
 
