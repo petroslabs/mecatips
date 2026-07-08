@@ -101,12 +101,64 @@ label {
 
 input[type="email"],
 input[type="password"],
-input[type="text"] {
+input[type="text"],
+textarea,
+select {
     padding: 0.6rem 0.7rem;
     border: 1px solid var(--steel);
     border-radius: 3px;
     font-size: 1rem;
+    font-family: inherit;
     background: white;
+}
+
+.tip-form ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #a63d2d;
+    font-size: 0.85rem;
+}
+
+.tip-form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* Type de tip : radios rendus comme un groupe de boutons plutôt qu'une liste verticale */
+#tip_form_type {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+#tip_form_type > div {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--steel);
+    border-radius: 3px;
+}
+
+#tip_form_type label {
+    font-weight: 400;
+}
+
+/* Masque le champ véhicule quand "tous véhicules" est coché — pas de JS nécessaire */
+.tip-form:has(#tip_all_vehicles:checked) .vehicle-field {
+    display: none;
+}
+
+.tip-form__more {
+    border-top: 1px solid var(--steel);
+    padding-top: 1rem;
+}
+
+.tip-form__more summary {
+    cursor: pointer;
+    font-weight: 600;
 }
 
 button,

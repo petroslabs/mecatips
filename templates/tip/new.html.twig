@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Proposer un tip — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>Proposer un tip</h1>
+    <p>Ton tip sera visible par le comité de validation avant publication. Tu n'as pas besoin de tout remplir pour aller vite : le titre, le tip et la catégorie suffisent.</p>
+
+    {{ form_start(tipForm, { attr: { class: 'tip-form' } }) }}
+        {{ form_errors(tipForm) }}
+        {{ form_row(tipForm.title) }}
+        {{ form_row(tipForm.content) }}
+        {{ form_row(tipForm.category) }}
+        {{ form_row(tipForm.type) }}
+
+        {{ form_row(tipForm.allVehicles) }}
+        <div class="vehicle-field">
+            {{ form_row(tipForm.vehicleLabel) }}
+            <datalist id="vehicle-labels">
+                {% for label in vehicleLabels %}
+                    <option value="{{ label }}">
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <details class="tip-form__more">
+            <summary>Détails supplémentaires</summary>
+            {{ form_row(tipForm.tagsInput) }}
+        </details>
+
+        <button type="submit">Envoyer mon tip</button>
+    {{ form_end(tipForm) }}
+{% endblock %}
