@@ -45,9 +45,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
-    #[ORM\Column]
-    private int $score = 0;
-
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
@@ -131,18 +128,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-    }
-
-    public function getScore(): int
-    {
-        return $this->score;
-    }
-
-    public function setScore(int $score): static
-    {
-        $this->score = $score;
-
-        return $this;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

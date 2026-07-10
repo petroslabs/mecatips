@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Classement des contributeurs — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>Classement des contributeurs</h1>
+    <p>Un mix du nombre de tips validés par le comité et de leur utilité perçue par la communauté — pas juste la quantité.</p>
+
+    {% if rankings is empty %}
+        <p>Personne au classement pour l'instant — sois le premier à proposer un tip validé !</p>
+    {% else %}
+        <ol class="ranking-list">
+            {% for ranking in rankings %}
+                <li class="ranking-list__item">
+                    <span class="ranking-list__rank">{{ loop.index }}</span>
+                    <div class="ranking-list__main">
+                        <div class="ranking-list__name">
+                            <strong>{{ ranking.user.username }}</strong>
+                            <span class="badge">{{ ranking.badge.value }}</span>
+                        </div>
+                        <div class="ranking-list__detail">
+                            {{ ranking.publishedTipsCount }} tip{{ ranking.publishedTipsCount > 1 ? 's' : '' }} validé{{ ranking.publishedTipsCount > 1 ? 's' : '' }}
+                            · score d'utilité {{ ranking.usefulScore >= 0 ? '+' : '' }}{{ ranking.usefulScore }}
+                        </div>
+                    </div>
+                    <span class="ranking-list__score">{{ ranking.totalScore }}</span>
+                </li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+{% endblock %}
