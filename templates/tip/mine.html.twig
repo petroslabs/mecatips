@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes tips — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>Mes tips</h1>
+
+    {% if items is empty %}
+        <p>Tu n'as encore soumis aucun tip. <a href="{{ path('tip_new') }}">Propose le premier</a> !</p>
+    {% else %}
+        <ul class="tip-list">
+            {% for item in items %}
+                {% set tip = item.tip %}
+                <li class="tip-list__item">
+                    <div class="tip-list__name">
+                        {% if tip.status.name == 'PUBLISHED' %}
+                            <a href="{{ path('tip_show', { id: tip.id }) }}">{{ item.title }}</a>
+                        {% else %}
+                            <strong>{{ item.title }}</strong>
+                        {% endif %}
+                        <span class="status-badge status-badge--{{ tip.status.name|lower }}">{{ tip.status.value }}</span>
+                    </div>
+                    <div class="tip-list__meta">
+                        <span>{{ tip.category.name }}</span>
+                        <span>{{ tip.type.value }}</span>
+                        <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
+                        <span>Proposé le {{ tip.createdAt|date('d/m/Y') }}</span>
+                    </div>
+
+                    {% if item.rejectionReasons|length > 0 %}
+                        <div class="tip-list__reasons">
+                            <p>Motif du refus :</p>
+                            <ul>
+                                {% for reason in item.rejectionReasons %}
+                                    <li>{{ reason }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

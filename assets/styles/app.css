@@ -391,3 +391,48 @@ button:hover,
     font-size: 1.1rem;
     flex-shrink: 0;
 }
+
+.tip-list__name {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.status-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.5rem;
+    border-radius: 2px;
+    color: white;
+}
+
+.status-badge--pending {
+    background: var(--steel);
+}
+
+.status-badge--published {
+    background: var(--patina);
+}
+
+.status-badge--rejected {
+    background: #a63d2d;
+}
+
+.tip-list__reasons {
+    background: var(--paper);
+    border-radius: 3px;
+    padding: 0.6rem 1rem;
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+}
+
+.tip-list__reasons p {
+    margin: 0 0 0.3rem;
+    font-weight: 600;
+    color: var(--steel);
+}
+
+.tip-list__reasons ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}

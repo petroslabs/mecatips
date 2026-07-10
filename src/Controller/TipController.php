@@ -12,6 +12,7 @@ use App\Entity\UsefulVote;
 use App\Entity\Vehicle;
 use App\Enum\TipStatus;
 use App\Enum\VehicleStatus;
+use App\Enum\VoteDecision;
 use App\Form\TipFormType;
 use App\Repository\TagRepository;
 use App\Repository\TipRepository;
@@ -99,6 +100,38 @@ final class TipController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+    }
+
+    #[Route('/tips/mine', name: 'tip_mine', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function mine(TipRepository $tipRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $items = [];
+        foreach ($tipRepository->findByAuthor($user) as $tip) {
+            $latestRevision = $tip->getRevisions()->last() ?: null;
+
+            $rejectionReasons = [];
+            if ($tip->getStatus() === TipStatus::REJECTED && $latestRevision) {
+                foreach ($latestRevision->getVotes() as $vote) {
+                    if ($vote->getDecision() === VoteDecision::AGAINST && $vote->getComment()) {
+                        $rejectionReasons[] = $vote->getComment();
+                    }
+                }
+            }
+
+            $items[] = [
+                'tip' => $tip,
+                'title' => $tip->getPublishedTitle() ?? $latestRevision?->getTitle() ?? '(sans titre)',
+                'rejectionReasons' => $rejectionReasons,
+            ];
+        }
+
+        return $this->render('tip/mine.html.twig', [
+            'items' => $items,
+        ]);
     }
 
     #[Route('/tips/new', name: 'tip_new', methods: ['GET', 'POST'])]
