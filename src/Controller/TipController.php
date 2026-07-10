@@ -8,10 +8,14 @@ use App\Entity\Tag;
 use App\Entity\Tip;
 use App\Entity\TipRevision;
 use App\Entity\User;
+use App\Entity\UsefulVote;
 use App\Entity\Vehicle;
+use App\Enum\TipStatus;
 use App\Enum\VehicleStatus;
 use App\Form\TipFormType;
 use App\Repository\TagRepository;
+use App\Repository\TipRepository;
+use App\Repository\UsefulVoteRepository;
 use App\Repository\VehicleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +28,79 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class TipController extends AbstractController
 {
+    #[Route('/tips', name: 'tip_index', methods: ['GET'])]
+    public function index(TipRepository $tipRepository): Response
+    {
+        return $this->render('tip/index.html.twig', [
+            'tips' => $tipRepository->findPublished(),
+        ]);
+    }
+
+    #[Route('/tips/{id}', name: 'tip_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(Tip $tip, UsefulVoteRepository $usefulVoteRepository): Response
+    {
+        if ($tip->getStatus() !== TipStatus::PUBLISHED) {
+            throw $this->createNotFoundException();
+        }
+
+        $myVote = null;
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $vote = $usefulVoteRepository->findOneBy(['tip' => $tip, 'user' => $user]);
+            $myVote = $vote?->isUseful();
+        }
+
+        return $this->render('tip/show.html.twig', [
+            'tip' => $tip,
+            'usefulCount' => $usefulVoteRepository->count(['tip' => $tip, 'useful' => true]),
+            'notUsefulCount' => $usefulVoteRepository->count(['tip' => $tip, 'useful' => false]),
+            'myVote' => $myVote,
+        ]);
+    }
+
+    #[Route('/tips/{id}/vote-utile', name: 'tip_vote_useful', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function voteUseful(
+        Tip $tip,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UsefulVoteRepository $usefulVoteRepository,
+    ): Response {
+        if ($tip->getStatus() !== TipStatus::PUBLISHED) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$this->isCsrfTokenValid('useful-vote-' . $tip->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton de sécurité invalide, réessaie.');
+
+            return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $useful = $request->request->get('useful') === '1';
+
+        $vote = $usefulVoteRepository->findOneBy(['tip' => $tip, 'user' => $user]);
+
+        if ($vote && $vote->isUseful() === $useful) {
+            // Revoter la même valeur annule le vote (bascule, comme sur Stack Overflow).
+            $entityManager->remove($vote);
+        } elseif ($vote) {
+            $vote->setUseful($useful);
+            $vote->setVotedAt(new \DateTimeImmutable());
+        } else {
+            $vote = (new UsefulVote())
+                ->setTip($tip)
+                ->setUser($user)
+                ->setUseful($useful);
+            $entityManager->persist($vote);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+    }
+
     #[Route('/tips/nouveau', name: 'tip_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(

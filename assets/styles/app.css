@@ -243,3 +243,92 @@ button:hover,
     gap: 0.4rem;
     font-weight: 400;
 }
+
+.tip-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tip-list__item {
+    border: 1px solid var(--steel);
+    border-radius: 3px;
+    padding: 1rem 1.2rem;
+    background: white;
+}
+
+.tip-list__item a {
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+}
+
+.tip-list__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--steel);
+    margin-top: 0.3rem;
+}
+
+.tip-detail__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--steel);
+    margin-bottom: 0.5rem;
+}
+
+.tip-detail__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1rem 0;
+}
+
+.tip-detail__tags .tag {
+    background: var(--paper);
+    border: 1px solid var(--steel);
+    border-radius: 2px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.8rem;
+    color: var(--steel);
+}
+
+.tip-detail__author {
+    font-size: 0.85rem;
+    color: var(--steel);
+}
+
+.tip-detail__vote {
+    border-top: 1px solid var(--steel);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+}
+
+.tip-detail__tally {
+    color: var(--steel);
+    font-size: 0.9rem;
+}
+
+.tip-detail__vote-form {
+    flex-direction: row;
+    gap: 0.75rem;
+}
+
+.vote-btn {
+    background: white;
+    color: var(--graphite);
+    border: 1px solid var(--steel);
+}
+
+.vote-btn--active {
+    background: var(--patina);
+    border-color: var(--patina);
+    color: white;
+}

@@ -6,6 +6,8 @@
     <h1>MécaTips</h1>
     <p>Les petits conseils d'atelier qu'on ne trouve pas dans les tutos — recensés et vérifiés par un comité de mécaniciens.</p>
 
+    <p><a href="{{ path('tip_index') }}" class="btn">Voir les tips</a></p>
+
     {% if app.user %}
         <p>Bienvenue, <strong>{{ app.user.username }}</strong>.</p>
         <p><a href="{{ path('tip_new') }}" class="btn">Proposer un tip</a></p>

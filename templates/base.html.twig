@@ -23,6 +23,7 @@
         <header class="site-header">
             <a href="{{ path('app_home') }}" class="brand">MécaTips</a>
             <nav class="site-nav">
+                <a href="{{ path('tip_index') }}">Tips</a>
                 {% if app.user %}
                     {% if is_granted('ROLE_COMMITTEE') %}
                         <a href="{{ path('committee_queue') }}">Comité</a>

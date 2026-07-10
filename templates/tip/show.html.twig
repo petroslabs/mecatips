@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tip.publishedTitle }} — MécaTips{% endblock %}
+
+{% block body %}
+    <div class="tip-detail__meta">
+        <span>{{ tip.category.name }}</span>
+        <span>{{ tip.type.value }}</span>
+        <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
+    </div>
+
+    <h1>{{ tip.publishedTitle }}</h1>
+    <p>{{ tip.publishedContent }}</p>
+
+    {% if tip.tags|length > 0 %}
+        <div class="tip-detail__tags">
+            {% for tag in tip.tags %}
+                <span class="tag">{{ tag.label }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <p class="tip-detail__author">Proposé par <strong>{{ tip.author.username }}</strong></p>
+
+    <div class="tip-detail__vote">
+        <p class="tip-detail__tally">
+            <strong>{{ usefulCount }}</strong> {{ usefulCount > 1 ? 'personnes ont' : 'personne a' }} trouvé ce tip utile
+            {% if notUsefulCount > 0 %}· <strong>{{ notUsefulCount }}</strong> pas utile{% endif %}
+        </p>
+
+        {% if app.user %}
+            <form method="post" action="{{ path('tip_vote_useful', { id: tip.id }) }}" class="tip-detail__vote-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('useful-vote-' ~ tip.id) }}">
+                <button type="submit" name="useful" value="1" class="vote-btn {{ myVote == true ? 'vote-btn--active' : '' }}">Utile</button>
+                <button type="submit" name="useful" value="0" class="vote-btn {{ myVote == false ? 'vote-btn--active' : '' }}">Pas utile</button>
+            </form>
+        {% else %}
+            <p><a href="{{ path('security_login') }}">Connecte-toi</a> pour donner ton avis.</p>
+        {% endif %}
+    </div>
+{% endblock %}

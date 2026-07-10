@@ -81,4 +81,11 @@ class UsefulVote
     {
         return $this->votedAt;
     }
+
+    public function setVotedAt(\DateTimeImmutable $votedAt): static
+    {
+        $this->votedAt = $votedAt;
+
+        return $this;
+    }
 }
