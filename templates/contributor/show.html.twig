@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ contributor.username }} — MécaTips{% endblock %}
+{% block meta_description %}{{ contributor.username }} sur MécaTips : {{ ranking.publishedTipsCount }} tip{{ ranking.publishedTipsCount > 1 ? 's' : '' }} validé{{ ranking.publishedTipsCount > 1 ? 's' : '' }}, badge {{ ranking.badge.value }}.{% endblock %}
 
 {% block body %}
     <div class="profile-header">

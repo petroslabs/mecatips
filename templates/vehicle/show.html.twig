@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ vehicle.label }} — MécaTips{% endblock %}
+{% block meta_description %}Tous les tips vérifiés pour {{ vehicle.label }} : {{ tips|length }} tip{{ tips|length > 1 ? 's' : '' }} publié{{ tips|length > 1 ? 's' : '' }} sur MécaTips.{% endblock %}
 
 {% block body %}
     <nav class="breadcrumb">

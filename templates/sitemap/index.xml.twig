@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{{ url('app_home') }}</loc>
+        <changefreq>daily</changefreq>
+    </url>
+    <url>
+        <loc>{{ url('tip_index') }}</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    <url>
+        <loc>{{ url('ranking_index') }}</loc>
+        <changefreq>daily</changefreq>
+    </url>
+    <url>
+        <loc>{{ url('tip_search') }}</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    {% for tip in tips %}
+    <url>
+        <loc>{{ url('tip_show', { id: tip.id }) }}</loc>
+        <lastmod>{{ tip.publishedAt|date('Y-m-d') }}</lastmod>
+        <changefreq>monthly</changefreq>
+    </url>
+    {% endfor %}
+    {% for operation in operations %}
+    <url>
+        <loc>{{ url('tip_list', { category: operation.parent.slug, operation: operation.slug }) }}</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    {% endfor %}
+    {% for vehicle in vehicles %}
+    <url>
+        <loc>{{ url('vehicle_show', { id: vehicle.id }) }}</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    {% endfor %}
+    {% for contributor in contributors %}
+    <url>
+        <loc>{{ url('contributor_show', { username: contributor.username }) }}</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    {% endfor %}
+</urlset>

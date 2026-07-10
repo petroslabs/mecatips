@@ -4,6 +4,16 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}MécaTips{% endblock %}</title>
+        <meta name="description" content="{% block meta_description %}Tips de mécanique auto vérifiés par un comité de contributeurs — ce que le mécano du coin te glisse à l'oreille, pas ce qu'on trouve dans les tutos génériques.{% endblock %}">
+        <link rel="canonical" href="{% block canonical %}{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}{% endblock %}">
+        <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
+        <meta property="og:site_name" content="MécaTips">
+        <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+        <meta property="og:title" content="{% block og_title %}{{ block('title') }}{% endblock %}">
+        <meta property="og:description" content="{% block og_description %}{{ block('meta_description') }}{% endblock %}">
+        <meta property="og:url" content="{% block og_url %}{{ block('canonical') }}{% endblock %}">
+
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.1em%22 font-size=%22110%22>🔧</text></svg>">
 
         {# Détection du thème avant le premier rendu, pour éviter un flash du

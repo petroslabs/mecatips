@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ operation.name }} — MécaTips{% endblock %}
+{% block meta_description %}Tips vérifiés sur {{ operation.name }} ({{ category.name }}) : {{ tips|length }} tip{{ tips|length > 1 ? 's' : '' }} validé{{ tips|length > 1 ? 's' : '' }} par le comité MécaTips.{% endblock %}
 
 {% block body %}
     {% set hasFilters = filters.vehicle is not null or filters.type is not null %}
