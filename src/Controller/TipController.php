@@ -271,7 +271,11 @@ final class TipController extends AbstractController
                 /** @var User $user */
                 $user = $this->getUser();
 
-                $vehicle = $allVehicles ? null : $this->resolveVehicle($vehicleLabel, $user, $vehicleRepository, $entityManager);
+                // Un véhicule saisi fait foi même si la case "tous véhicules"
+                // est restée cochée (elle est cochée par défaut et masque le
+                // champ tant qu'on ne la décoche pas : un texte présent est un
+                // signal non ambigu, contrairement à l'inverse).
+                $vehicle = $vehicleLabel !== '' ? $this->resolveVehicle($vehicleLabel, $user, $vehicleRepository, $entityManager) : null;
 
                 $tip = (new Tip())
                     ->setAuthor($user)

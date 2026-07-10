@@ -80,7 +80,7 @@ final class TipFormType extends AbstractType
                 'label' => 'Véhicule concerné',
                 'required' => false,
                 'mapped' => false,
-                'attr' => ['placeholder' => 'ex : Golf 4 1.9 TDI PD', 'list' => 'vehicle-labels'],
+                'attr' => ['placeholder' => 'ex : Volkswagen Golf 4 1.9 TDI PD', 'list' => 'vehicle-labels'],
             ])
             ->add('tagsInput', TextType::class, [
                 'label' => 'Tags (optionnel, séparés par une virgule)',
