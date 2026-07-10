@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Auto — MécaTips{% endblock %}
+
+{% block body %}
+    <nav class="breadcrumb">
+        <a href="{{ path('tip_index') }}">Véhicules</a>
+        <span class="breadcrumb__sep">/</span>
+        <span>Auto</span>
+    </nav>
+
+    <h1>Quelle catégorie ?</h1>
+
+    <div class="tile-grid">
+        {% for category in categories %}
+            <a href="{{ path('tip_browse_operation', { category: category.slug }) }}" class="tile">
+                <span class="tile__label">{{ category.name }}</span>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

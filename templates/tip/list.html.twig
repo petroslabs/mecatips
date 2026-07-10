@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ operation.name }} — MécaTips{% endblock %}
+
+{% block body %}
+    {% set hasFilters = filters.vehicle is not null or filters.type is not null %}
+
+    <nav class="breadcrumb">
+        <a href="{{ path('tip_index') }}">Véhicules</a>
+        <span class="breadcrumb__sep">/</span>
+        <a href="{{ path('tip_browse_category') }}">Auto</a>
+        <span class="breadcrumb__sep">/</span>
+        <a href="{{ path('tip_browse_operation', { category: category.slug }) }}">{{ category.name }}</a>
+        <span class="breadcrumb__sep">/</span>
+        <span>{{ operation.name }}</span>
+    </nav>
+
+    <h1>{{ operation.name }}</h1>
+
+    <form method="get" class="filter-bar">
+        <div>
+            <label for="filter-vehicle">Véhicule</label>
+            <select id="filter-vehicle" name="vehicle">
+                <option value="">Tous</option>
+                {% for vehicle in vehicles %}
+                    <option value="{{ vehicle.id }}" {{ filters.vehicle and filters.vehicle.id == vehicle.id ? 'selected' }}>{{ vehicle.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="filter-type">Type</label>
+            <select id="filter-type" name="type">
+                <option value="">Tous</option>
+                {% for type in types %}
+                    <option value="{{ type.name }}" {{ filters.type and filters.type.name == type.name ? 'selected' }}>{{ type.value }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="filter-sort">Tri</label>
+            <select id="filter-sort" name="sort">
+                <option value="recent" {{ filters.sort == 'recent' ? 'selected' }}>Plus récents</option>
+                <option value="useful" {{ filters.sort == 'useful' ? 'selected' }}>Mieux notés</option>
+            </select>
+        </div>
+
+        <button type="submit">Filtrer</button>
+        {% if hasFilters %}
+            <a href="{{ path('tip_list', { category: category.slug, operation: operation.slug }) }}" class="filter-bar__reset">Réinitialiser</a>
+        {% endif %}
+    </form>
+
+    {% if tips is empty %}
+        <p>
+            {% if hasFilters %}
+                Aucun tip ne correspond à ces filtres pour cette opération.
+            {% else %}
+                Aucun tip publié pour cette opération pour le moment.
+            {% endif %}
+        </p>
+    {% endif %}
+
+    <ul class="tip-list">
+        {% for tip in tips %}
+            <li class="tip-list__item">
+                <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
+                <div class="tip-list__meta">
+                    <span>{{ tip.type.value }}</span>
+                    <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

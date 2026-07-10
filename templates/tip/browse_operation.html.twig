@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }} — MécaTips{% endblock %}
+
+{% block body %}
+    <nav class="breadcrumb">
+        <a href="{{ path('tip_index') }}">Véhicules</a>
+        <span class="breadcrumb__sep">/</span>
+        <a href="{{ path('tip_browse_category') }}">Auto</a>
+        <span class="breadcrumb__sep">/</span>
+        <span>{{ category.name }}</span>
+    </nav>
+
+    <h1>{{ category.name }} — quelle opération ?</h1>
+
+    {% if operations is empty %}
+        <p>Aucune opération référencée pour l'instant dans cette catégorie.</p>
+    {% endif %}
+
+    <div class="tile-grid">
+        {% for operation in operations %}
+            <a href="{{ path('tip_list', { category: category.slug, operation: operation.slug }) }}" class="tile">
+                <span class="tile__label">{{ operation.name }}</span>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

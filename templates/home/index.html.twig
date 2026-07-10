@@ -15,7 +15,7 @@
                     <li class="tip-list__item">
                         <a href="{{ path('tip_show', { id: featuredTip.id }) }}">{{ featuredTip.publishedTitle }}</a>
                         <div class="tip-list__meta">
-                            <span>{{ featuredTip.category.name }}</span>
+                            <span>{{ featuredTip.category.parent.name }} — {{ featuredTip.category.name }}</span>
                             <span>{{ featuredTip.type.value }}</span>
                             <span>{{ featuredTip.vehicle ? featuredTip.vehicle.label : 'Tous véhicules' }}</span>
                         </div>

@@ -56,25 +56,73 @@ final class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    /** @return array<string, Category> slug => Category */
+    /**
+     * Les tips sont rattachés à une catégorie feuille ("opération" : distrib,
+     * purge de frein...), jamais à une catégorie de premier niveau — c'est
+     * cette feuille qui alimente le parcours de navigation par tuiles
+     * (véhicule > catégorie > opération > tips).
+     *
+     * @return array<string, Category> slug => Category, feuilles et
+     *                                  catégories de premier niveau confondues
+     */
     private function loadCategories(ObjectManager $manager): array
     {
         $definitions = [
-            ['Moteur', 'engine'],
-            ['Freinage', 'brakes'],
-            ['Suspension / Direction', 'suspension-steering'],
-            ['Transmission / Boîte', 'transmission-gearbox'],
-            ['Électrique / Électronique', 'electrical-electronics'],
-            ['Climatisation', 'air-conditioning'],
-            ['Carrosserie', 'bodywork'],
-            ['Outillage / Méthode générale', 'tooling-general-methods'],
+            'engine' => ['Moteur', [
+                'engine-timing' => 'Distribution',
+                'engine-oil-change' => 'Vidange moteur',
+                'accessory-belt' => 'Courroie accessoire',
+                'cold-start' => 'Démarrage à froid',
+            ]],
+            'brakes' => ['Freinage', [
+                'pads-and-discs' => 'Plaquettes et disques',
+                'brake-fluid-bleeding' => 'Purge du circuit de frein',
+                'calipers-and-hoses' => 'Étriers et flexibles',
+            ]],
+            'suspension-steering' => ['Suspension / Direction', [
+                'shock-absorbers' => 'Amortisseurs',
+                'ball-joints-and-links' => 'Rotules et biellettes',
+                'wheel-alignment' => 'Géométrie',
+            ]],
+            'transmission-gearbox' => ['Transmission / Boîte', [
+                'gearbox-oil-change' => 'Vidange boîte',
+                'clutch' => 'Embrayage',
+                'driveshafts' => 'Cardans',
+            ]],
+            'electrical-electronics' => ['Électrique / Électronique', [
+                'battery' => 'Batterie',
+                'alternator' => 'Alternateur',
+                'starter-motor' => 'Démarreur',
+                'electronic-diagnostics' => 'Diagnostic électronique',
+            ]],
+            'air-conditioning' => ['Climatisation', [
+                'refrigerant-recharge' => 'Recharge clim',
+                'compressor' => 'Compresseur',
+                'cabin-air-filter' => 'Filtre habitacle',
+            ]],
+            'bodywork' => ['Carrosserie', [
+                'rust-and-paint' => 'Rouille et peinture',
+                'rocker-panels' => 'Bas de caisse',
+                'lights-and-optics' => 'Optiques et éclairage',
+            ]],
+            'tooling-general-methods' => ['Outillage / Méthode générale', [
+                'tool-selection' => 'Choix des outils',
+                'general-methods' => 'Méthodes générales',
+                'workshop-safety' => 'Sécurité atelier',
+            ]],
         ];
 
         $categories = [];
-        foreach ($definitions as [$name, $slug]) {
+        foreach ($definitions as $slug => [$name, $operations]) {
             $category = (new Category())->setName($name)->setSlug($slug);
             $manager->persist($category);
             $categories[$slug] = $category;
+
+            foreach ($operations as $operationSlug => $operationName) {
+                $operation = (new Category())->setName($operationName)->setSlug($operationSlug)->setParent($category);
+                $manager->persist($operation);
+                $categories[$operationSlug] = $operation;
+            }
         }
 
         return $categories;
@@ -169,7 +217,7 @@ final class AppFixtures extends Fixture
             manager: $manager,
             users: $users,
             author: 'julie_mecano',
-            category: $categories['engine'],
+            category: $categories['engine-timing'],
             type: TipType::PITFALL,
             vehicle: $vehicles['golf4-tdi'],
             title: 'Toujours piger le moteur avant la distribution',
@@ -194,7 +242,7 @@ final class AppFixtures extends Fixture
             manager: $manager,
             users: $users,
             author: 'julie_mecano',
-            category: $categories['engine'],
+            category: $categories['engine-timing'],
             type: TipType::PREVENTION,
             vehicle: null,
             title: 'Change la pompe à eau tant que tu y es',
@@ -222,7 +270,7 @@ final class AppFixtures extends Fixture
             manager: $manager,
             users: $users,
             author: 'julie_mecano',
-            category: $categories['air-conditioning'],
+            category: $categories['refrigerant-recharge'],
             type: TipType::ADVICE,
             vehicle: null,
             title: "Recharge la clim avant l'été",
@@ -238,7 +286,7 @@ final class AppFixtures extends Fixture
             manager: $manager,
             users: $users,
             author: 'thomas_garage',
-            category: $categories['brakes'],
+            category: $categories['pads-and-discs'],
             type: TipType::PITFALL,
             vehicle: $vehicles['clio4-dci'],
             title: 'Ne jamais réutiliser les vis de disque de frein',
@@ -254,7 +302,7 @@ final class AppFixtures extends Fixture
             manager: $manager,
             users: $users,
             author: 'thomas_garage',
-            category: $categories['bodywork'],
+            category: $categories['rust-and-paint'],
             type: TipType::ADVICE,
             vehicle: null,
             title: 'Poncer la rouille avant de repeindre',
@@ -271,7 +319,7 @@ final class AppFixtures extends Fixture
             manager: $manager,
             users: $users,
             author: 'thomas_garage',
-            category: $categories['electrical-electronics'],
+            category: $categories['battery'],
             type: TipType::TOOLING,
             vehicle: null,
             title: 'Utiliser un multimètre pour tester la batterie avant de la changer',
@@ -284,7 +332,7 @@ final class AppFixtures extends Fixture
             manager: $manager,
             users: $users,
             author: 'yasmine_atelier',
-            category: $categories['transmission-gearbox'],
+            category: $categories['gearbox-oil-change'],
             type: TipType::ADVICE,
             vehicle: $vehicles['308-hdi'],
             title: 'Vérifier le niveau de boîte tous les 60 000 km',

@@ -17,7 +17,7 @@
                 <span class="review-card__badge">
                     {{ tip.status.name == 'PUBLISHED' ? 'Modification proposée' : 'Nouvelle soumission' }}
                 </span>
-                <span>{{ tip.category.name }}</span>
+                <span>{{ tip.category.parent.name }} — {{ tip.category.name }}</span>
                 <span>{{ tip.type.value }}</span>
                 <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
             </div>

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tips — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>Quel véhicule ?</h1>
+    <p class="browse-intro">Choisis un type de véhicule pour retrouver les tips classés par catégorie puis par opération.</p>
+
+    <div class="tile-grid">
+        <a href="{{ path('tip_browse_category') }}" class="tile">
+            <span class="tile__label">Auto</span>
+        </a>
+        <span class="tile tile--disabled">
+            <span class="tile__label">Moto</span>
+            <span class="tile__badge">Bientôt disponible</span>
+        </span>
+    </div>
+
+    <p class="browse-alt">Tu sais déjà ce que tu cherches ? <a href="{{ path('tip_search') }}">Passe par la recherche libre</a>.</p>
+{% endblock %}

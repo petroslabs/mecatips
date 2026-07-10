@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use App\Enum\VehicleStatus;
 use App\Repository\VehicleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -44,9 +46,14 @@ class Vehicle
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
+    /** @var Collection<int, Tip> */
+    #[ORM\OneToMany(targetEntity: Tip::class, mappedBy: 'vehicle')]
+    private Collection $tips;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->tips = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,5 +136,11 @@ class Vehicle
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    /** @return Collection<int, Tip> */
+    public function getTips(): Collection
+    {
+        return $this->tips;
     }
 }

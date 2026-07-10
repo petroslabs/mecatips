@@ -28,7 +28,7 @@ class Tip
     #[ORM\JoinColumn(nullable: false)]
     private Category $category;
 
-    #[ORM\ManyToOne(targetEntity: Vehicle::class)]
+    #[ORM\ManyToOne(targetEntity: Vehicle::class, inversedBy: 'tips')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Vehicle $vehicle = null;
 

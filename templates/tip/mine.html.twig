@@ -21,7 +21,7 @@
                         <span class="status-badge status-badge--{{ tip.status.name|lower }}">{{ tip.status.value }}</span>
                     </div>
                     <div class="tip-list__meta">
-                        <span>{{ tip.category.name }}</span>
+                        <span>{{ tip.category.parent.name }} — {{ tip.category.name }}</span>
                         <span>{{ tip.type.value }}</span>
                         <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
                         <span>Proposé le {{ tip.createdAt|date('d/m/Y') }}</span>

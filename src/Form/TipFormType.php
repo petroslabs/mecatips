@@ -39,14 +39,21 @@ final class TipFormType extends AbstractType
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'name',
-                'label' => 'Catégorie',
-                'placeholder' => 'Choisir une catégorie',
+                // Le tip se rattache à une opération précise (feuille), pas à
+                // une catégorie de premier niveau — le libellé rappelle la
+                // catégorie parente pour lever l'ambiguïté entre opérations
+                // qui portent le même nom sous des catégories différentes.
+                'choice_label' => static fn (Category $category) => sprintf('%s — %s', $category->getParent()?->getName(), $category->getName()),
+                'label' => 'Opération concernée',
+                'placeholder' => 'Choisir une opération',
                 'query_builder' => static fn (CategoryRepository $repository) => $repository->createQueryBuilder('c')
-                    ->where('c.parent IS NULL')
-                    ->orderBy('c.name', 'ASC'),
+                    ->join('c.parent', 'p')
+                    ->addSelect('p')
+                    ->where('c.parent IS NOT NULL')
+                    ->orderBy('p.name', 'ASC')
+                    ->addOrderBy('c.name', 'ASC'),
                 'constraints' => [
-                    new NotBlank(message: 'Choisis une catégorie.'),
+                    new NotBlank(message: 'Choisis une opération.'),
                 ],
             ])
             ->add('type', EnumType::class, [

@@ -11,9 +11,11 @@ use App\Entity\User;
 use App\Entity\UsefulVote;
 use App\Entity\Vehicle;
 use App\Enum\TipStatus;
+use App\Enum\TipType;
 use App\Enum\VehicleStatus;
 use App\Enum\VoteDecision;
 use App\Form\TipFormType;
+use App\Repository\CategoryRepository;
 use App\Repository\TagRepository;
 use App\Repository\TipRepository;
 use App\Repository\UsefulVoteRepository;
@@ -29,12 +31,121 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class TipController extends AbstractController
 {
+    /**
+     * Écran d'entrée : tuiles par type de véhicule. Un seul type existe pour
+     * l'instant (auto) — moto est affiché mais inerte, cf ROADMAP.md (v2).
+     */
     #[Route('/tips', name: 'tip_index', methods: ['GET'])]
-    public function index(TipRepository $tipRepository): Response
+    public function index(): Response
     {
-        return $this->render('tip/index.html.twig', [
-            'tips' => $tipRepository->findPublished(),
+        return $this->render('tip/browse_vehicle_type.html.twig');
+    }
+
+    /** Tuiles des catégories primaires (moteur, freinage...) pour le véhicule "auto". */
+    #[Route('/tips/auto', name: 'tip_browse_category', methods: ['GET'])]
+    public function browseCategory(CategoryRepository $categoryRepository): Response
+    {
+        return $this->render('tip/browse_category.html.twig', [
+            'categories' => $categoryRepository->findTopLevel(),
         ]);
+    }
+
+    /** Tuiles des opérations (distrib, purge de frein...) d'une catégorie primaire. */
+    #[Route('/tips/auto/{category}', name: 'tip_browse_operation', methods: ['GET'])]
+    public function browseOperation(string $category, CategoryRepository $categoryRepository): Response
+    {
+        $categoryEntity = $categoryRepository->findOneBySlug($category);
+
+        if ($categoryEntity === null || $categoryEntity->getParent() !== null) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('tip/browse_operation.html.twig', [
+            'category' => $categoryEntity,
+            'operations' => $categoryRepository->findChildren($categoryEntity),
+        ]);
+    }
+
+    /** Liste des tips d'une opération précise, avec filtres secondaires (véhicule/type/tri). */
+    #[Route('/tips/auto/{category}/{operation}', name: 'tip_list', methods: ['GET'])]
+    public function list(
+        string $category,
+        string $operation,
+        Request $request,
+        TipRepository $tipRepository,
+        CategoryRepository $categoryRepository,
+        VehicleRepository $vehicleRepository,
+    ): Response {
+        $operationEntity = $categoryRepository->findOneBySlug($operation);
+
+        if ($operationEntity === null || $operationEntity->getParent()?->getSlug() !== $category) {
+            throw $this->createNotFoundException();
+        }
+
+        $vehicle = $this->findEntityFromQuery($request, 'vehicle', $vehicleRepository);
+        $type = TipType::tryFromName((string) $request->query->get('type', ''));
+        $sort = $request->query->get('sort') === 'useful' ? 'useful' : 'recent';
+
+        return $this->render('tip/list.html.twig', [
+            'category' => $operationEntity->getParent(),
+            'operation' => $operationEntity,
+            'tips' => $tipRepository->search($operationEntity, $vehicle, $type, null, null, $sort),
+            'vehicles' => $vehicleRepository->findWithPublishedTips(),
+            'types' => TipType::cases(),
+            'filters' => [
+                'vehicle' => $vehicle,
+                'type' => $type,
+                'sort' => $sort,
+            ],
+        ]);
+    }
+
+    /** Recherche libre à facettes, pour qui sait déjà ce qu'il cherche plutôt que de suivre le parcours par tuiles. */
+    #[Route('/tips/recherche', name: 'tip_search', methods: ['GET'])]
+    public function search(
+        Request $request,
+        TipRepository $tipRepository,
+        CategoryRepository $categoryRepository,
+        VehicleRepository $vehicleRepository,
+        TagRepository $tagRepository,
+    ): Response {
+        $category = $this->findEntityFromQuery($request, 'category', $categoryRepository);
+        $vehicle = $this->findEntityFromQuery($request, 'vehicle', $vehicleRepository);
+        $tag = $this->findEntityFromQuery($request, 'tag', $tagRepository);
+        $type = TipType::tryFromName((string) $request->query->get('type', ''));
+        $query = trim((string) $request->query->get('q', ''));
+        $sort = $request->query->get('sort') === 'useful' ? 'useful' : 'recent';
+
+        $hasFilters = $category !== null || $vehicle !== null || $tag !== null || $type !== null || $query !== '';
+
+        return $this->render('tip/search.html.twig', [
+            'tips' => $tipRepository->search($category, $vehicle, $type, $tag, $query !== '' ? $query : null, $sort),
+            'categories' => $categoryRepository->findOperations(),
+            'vehicles' => $vehicleRepository->findWithPublishedTips(),
+            'tags' => $tagRepository->findBy([], ['label' => 'ASC']),
+            'types' => TipType::cases(),
+            'filters' => [
+                'category' => $category,
+                'vehicle' => $vehicle,
+                'tag' => $tag,
+                'type' => $type,
+                'q' => $query,
+                'sort' => $sort,
+            ],
+            'hasFilters' => $hasFilters,
+        ]);
+    }
+
+    /** Résout un filtre id= en entité, en ignorant silencieusement une valeur invalide plutôt que de planter la recherche. */
+    private function findEntityFromQuery(Request $request, string $param, object $repository): ?object
+    {
+        $id = $request->query->get($param);
+
+        if ($id === null || !ctype_digit((string) $id)) {
+            return null;
+        }
+
+        return $repository->find((int) $id);
     }
 
     #[Route('/tips/{id}', name: 'tip_show', methods: ['GET'], requirements: ['id' => '\d+'])]
