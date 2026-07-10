@@ -97,6 +97,15 @@ db-create: ## Créer la base 'mecatips' sur le PostgreSQL partagé
 db-drop: ## Supprimer la base 'mecatips' sur le PostgreSQL partagé
 	cd ../symfony_env && $(MAKE) db-drop name=mecatips
 
+.PHONY: db-fixtures
+db-fixtures: ## ⚠️  VIDE la base puis la repeuple avec un jeu de données complet (comptes de test, tips à tous les statuts) — local uniquement
+	$(DOCKER_COMP) exec app php bin/console doctrine:fixtures:load --no-interaction
+	@echo ""
+	@echo "$(GREEN)✅ Base repeuplée — mot de passe pour tous les comptes de test : password123$(RESET)"
+	@echo "$(CYAN)   admin@mecatips.test (admin) · amara/bruno/chloe@mecatips.test (comité)$(RESET)"
+	@echo "$(CYAN)   julie/thomas/yasmine/paul@mecatips.test (contributeurs)$(RESET)"
+	@echo ""
+
 ## —— Docker (production, VPS) —————————————————————————————————————————————————
 # Les -f explicites désactivent l'auto-chargement de compose.override.yaml
 # (dev) — cf. .env.docker.example à copier en .env.docker sur le VPS.
