@@ -3,27 +3,32 @@
 {% block title %}Connexion — MécaTips{% endblock %}
 
 {% block body %}
-    <h1>Connexion</h1>
+    <div class="auth-page">
+        <div class="auth-card">
+            <span class="eyebrow">MécaTips</span>
+            <h1>Connexion</h1>
 
-    {% if error %}
-        <div class="flash flash--error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+            {% if error %}
+                <div class="flash flash--error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
 
-    <form method="post">
-        <div>
-            <label for="username">Email</label>
-            <input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required autofocus>
+            <form method="post">
+                <div>
+                    <label for="username">Email</label>
+                    <input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required autofocus>
+                </div>
+
+                <div>
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="_password" id="password" autocomplete="current-password" required>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit">Se connecter</button>
+            </form>
         </div>
 
-        <div>
-            <label for="password">Mot de passe</label>
-            <input type="password" name="_password" id="password" autocomplete="current-password" required>
-        </div>
-
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-        <button type="submit">Se connecter</button>
-    </form>
-
-    <p>Pas encore de compte ? <a href="{{ path('registration') }}">Inscris-toi</a>.</p>
+        <p class="auth-switch">Pas encore de compte ? <a href="{{ path('registration') }}">Inscris-toi</a>.</p>
+    </div>
 {% endblock %}

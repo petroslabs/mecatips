@@ -3,15 +3,34 @@
 {% block title %}MécaTips — les tips de terrain de la mécanique{% endblock %}
 
 {% block body %}
-    <h1>MécaTips</h1>
-    <p>Les petits conseils d'atelier qu'on ne trouve pas dans les tutos — recensés et vérifiés par un comité de mécaniciens.</p>
+    <section class="hero">
+        <span class="eyebrow">Conseils de terrain, vérifiés par des mécaniciens</span>
+        <h1 class="hero__title">Les tips qu'on <span class="marker">ne trouve pas dans les tutos</span>.</h1>
+        <p class="hero__lead">Ce que ton oncle ou le mécano du coin te glisse à l'oreille pendant qu'il bosse — recensé, vérifié par un comité, gratuit à consulter.</p>
 
-    <p><a href="{{ path('tip_index') }}" class="btn">Voir les tips</a></p>
+        {% if featuredTip %}
+            <div class="hero__example">
+                <span class="hero__example-label">Récemment publié</span>
+                <ul class="tip-list">
+                    <li class="tip-list__item">
+                        <a href="{{ path('tip_show', { id: featuredTip.id }) }}">{{ featuredTip.publishedTitle }}</a>
+                        <div class="tip-list__meta">
+                            <span>{{ featuredTip.category.name }}</span>
+                            <span>{{ featuredTip.type.value }}</span>
+                            <span>{{ featuredTip.vehicle ? featuredTip.vehicle.label : 'Tous véhicules' }}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
 
-    {% if app.user %}
-        <p>Bienvenue, <strong>{{ app.user.username }}</strong>.</p>
-        <p><a href="{{ path('tip_new') }}" class="btn">Proposer un tip</a></p>
-    {% else %}
-        <p><a href="{{ path('registration') }}" class="btn">Créer un compte</a></p>
-    {% endif %}
+        <div class="hero__actions">
+            <a href="{{ path('tip_index') }}" class="btn">Voir tous les tips</a>
+            {% if app.user %}
+                <a href="{{ path('tip_new') }}" class="btn btn-outline">Proposer un tip</a>
+            {% else %}
+                <a href="{{ path('registration') }}" class="btn btn-outline">Créer un compte</a>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

@@ -13,10 +13,10 @@
             {% for ranking in rankings %}
                 <li class="ranking-list__item">
                     <span class="ranking-list__rank">{{ loop.index }}</span>
+                    <span class="stamp">{{ ranking.badge.value }}</span>
                     <div class="ranking-list__main">
                         <div class="ranking-list__name">
                             <strong>{{ ranking.user.username }}</strong>
-                            <span class="badge">{{ ranking.badge.value }}</span>
                         </div>
                         <div class="ranking-list__detail">
                             {{ ranking.publishedTipsCount }} tip{{ ranking.publishedTipsCount > 1 ? 's' : '' }} validé{{ ranking.publishedTipsCount > 1 ? 's' : '' }}

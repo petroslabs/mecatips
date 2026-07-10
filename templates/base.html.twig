@@ -5,6 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}MécaTips{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.1em%22 font-size=%22110%22>🔧</text></svg>">
+
+        {# Détection du thème avant le premier rendu, pour éviter un flash du
+           mauvais thème — doit s'exécuter avant que le CSS (qui lit
+           :root[data-theme]) ne soit appliqué. Le contrôleur Stimulus
+           "theme" ne gère que le clic sur le bouton une fois la page chargée. #}
+        <script>
+            (function () {
+                var stored = localStorage.getItem('mecatips-theme');
+                var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            })();
+        </script>
+
         {% block stylesheets %}
         {% endblock %}
 
@@ -20,6 +33,17 @@
         {% endif %}
     </head>
     <body>
+        {# Filtre de distorsion utilisé par .stamp (badge tampon encreur) — un
+           seul filtre partagé, référencé via filter: url(#stampDistress). #}
+        <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+            <defs>
+                <filter id="stampDistress" x="-20%" y="-20%" width="140%" height="140%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" seed="7"></feTurbulence>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5"></feDisplacementMap>
+                </filter>
+            </defs>
+        </svg>
+
         <header class="site-header">
             <a href="{{ path('app_home') }}" class="brand">MécaTips</a>
             <nav class="site-nav">
@@ -40,6 +64,9 @@
                     <a href="{{ path('security_login') }}">Connexion</a>
                     <a href="{{ path('registration') }}" class="site-nav__cta">S'inscrire</a>
                 {% endif %}
+                <button type="button" class="theme-toggle" data-controller="theme" data-action="theme#toggle">
+                    <span data-theme-target="label">Mode sombre</span>
+                </button>
             </nav>
         </header>
 

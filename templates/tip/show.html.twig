@@ -5,7 +5,7 @@
 {% block body %}
     <div class="tip-detail__meta">
         <span>{{ tip.category.name }}</span>
-        <span>{{ tip.type.value }}</span>
+        <span{% if tip.type.name == 'PITFALL' %} class="marker"{% endif %}>{{ tip.type.value }}</span>
         <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
     </div>
 
