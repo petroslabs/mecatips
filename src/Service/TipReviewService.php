@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\CommitteeVote;
+use App\Entity\Notification;
+use App\Entity\Tip;
 use App\Entity\TipRevision;
 use App\Entity\User;
+use App\Enum\NotificationType;
 use App\Enum\RevisionStatus;
 use App\Enum\TipStatus;
 use App\Enum\VoteDecision;
@@ -66,6 +69,11 @@ final class TipReviewService
         $revision->setReviewedAt($now);
         $tip = $revision->getTip();
 
+        // Capturé avant mutation : distingue une première soumission d'une
+        // modification sur un tip déjà publié, pour le bon type de
+        // notification (mêmes critères que committee/queue.html.twig).
+        $wasAlreadyPublished = $tip->getStatus() === TipStatus::PUBLISHED;
+
         if ($for > $against) {
             $revision->setStatus(RevisionStatus::APPROVED);
             $tip->setPublishedTitle($revision->getTitle());
@@ -74,6 +82,8 @@ final class TipReviewService
             if ($tip->getPublishedAt() === null) {
                 $tip->setPublishedAt($now);
             }
+
+            $this->notify($tip, $wasAlreadyPublished ? NotificationType::EDIT_PUBLISHED : NotificationType::TIP_PUBLISHED);
 
             return;
         }
@@ -87,5 +97,17 @@ final class TipReviewService
         if ($tip->getStatus() === TipStatus::PENDING) {
             $tip->setStatus(TipStatus::REJECTED);
         }
+
+        $this->notify($tip, $wasAlreadyPublished ? NotificationType::EDIT_REJECTED : NotificationType::TIP_REJECTED);
+    }
+
+    private function notify(Tip $tip, NotificationType $type): void
+    {
+        $notification = (new Notification())
+            ->setRecipient($tip->getAuthor())
+            ->setTip($tip)
+            ->setType($type);
+
+        $this->entityManager->persist($notification);
     }
 }

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notifications — MécaTips{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block body %}
+    <h1>Notifications</h1>
+
+    {% if notifications is empty %}
+        <p>Rien pour l'instant — tu seras prévenu ici dès qu'un de tes tips est validé ou refusé par le comité.</p>
+    {% endif %}
+
+    <ul class="notification-list">
+        {% for notification in notifications %}
+            <li class="notification-list__item {{ notification.isRead ? '' : 'notification-list__item--unread' }}">
+                {% if notification.tip and notification.type.linksToPublishedTip %}
+                    <a href="{{ path('tip_show', { id: notification.tip.id }) }}">{{ notification.type.value }} — {{ notification.tip.publishedTitle }}</a>
+                {% elseif notification.tip %}
+                    <a href="{{ path('tip_mine') }}">{{ notification.type.value }}</a>
+                {% else %}
+                    <span>{{ notification.type.value }}</span>
+                {% endif %}
+                <span class="notification-list__date">{{ notification.createdAt|date('d/m/Y à H:i') }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

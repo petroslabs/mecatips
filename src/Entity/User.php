@@ -56,11 +56,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Vehicle::class, mappedBy: 'proposedBy')]
     private Collection $proposedVehicles;
 
+    /** @var Collection<int, Notification> */
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'recipient')]
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->tips = new ArrayCollection();
         $this->proposedVehicles = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -165,5 +170,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getProposedVehicles(): Collection
     {
         return $this->proposedVehicles;
+    }
+
+    /** @return Collection<int, Notification> */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
     }
 }
