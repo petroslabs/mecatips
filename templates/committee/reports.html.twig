@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signalements — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>Signalements</h1>
+
+    {% if reports is empty %}
+        <p>Aucun signalement en attente pour le moment.</p>
+    {% endif %}
+
+    {% for report in reports %}
+        {% set tip = report.tip %}
+        <article class="review-card">
+            <div class="review-card__meta">
+                <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
+                <span>{{ tip.category.parent.name }} — {{ tip.category.name }}</span>
+            </div>
+
+            <p>{{ report.reason }}</p>
+
+            <p class="review-card__author">Signalé par <strong>{{ report.reporter.username }}</strong> le {{ report.createdAt|date('d/m/Y à H:i') }}</p>
+
+            <form method="post" action="{{ path('committee_report_resolve', { id: report.id }) }}" class="review-card__form">
+                <input type="hidden" name="_token" value="{{ csrf_token('resolve-report-' ~ report.id) }}">
+                <button type="submit" name="decision" value="reviewed">Marquer traité</button>
+                <button type="submit" name="decision" value="dismissed">Classer sans suite</button>
+            </form>
+        </article>
+    {% endfor %}
+{% endblock %}

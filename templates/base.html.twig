@@ -52,6 +52,7 @@
                 {% if app.user %}
                     {% if is_granted('ROLE_COMMITTEE') %}
                         <a href="{{ path('committee_queue') }}">Comité</a>
+                        <a href="{{ path('committee_reports') }}">Signalements</a>
                     {% endif %}
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('admin_committee_index') }}">Admin</a>

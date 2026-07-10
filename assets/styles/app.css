@@ -665,6 +665,26 @@ select:focus-visible {
     color: white;
 }
 
+.report-disclosure {
+    border-top: 1px dashed var(--border);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+}
+
+.report-disclosure summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.report-form {
+    margin-top: 0.75rem;
+}
+
+.review-card__form button + button {
+    margin-left: 0.6rem;
+}
+
 /* ==========================================================================
    Classement — pas d'inclinaison ici : c'est une liste ordonnée, la
    lisibilité/scannabilité prime sur le geste "fiche d'atelier".

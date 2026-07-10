@@ -42,4 +42,18 @@
             <p><a href="{{ path('security_login') }}">Connecte-toi</a> pour donner ton avis.</p>
         {% endif %}
     </div>
+
+    {% if app.user %}
+        <details class="report-disclosure">
+            <summary>Signaler ce tip</summary>
+            <form method="post" action="{{ path('tip_report', { id: tip.id }) }}" class="report-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('report-' ~ tip.id) }}">
+                <div>
+                    <label for="report-reason">Pourquoi ce signalement ?</label>
+                    <textarea id="report-reason" name="reason" rows="3" placeholder="Obsolète, erroné, potentiellement dangereux..." required></textarea>
+                </div>
+                <button type="submit">Envoyer le signalement</button>
+            </form>
+        </details>
+    {% endif %}
 {% endblock %}
