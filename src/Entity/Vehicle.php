@@ -34,8 +34,8 @@ class Vehicle
     #[ORM\Column(length: 255)]
     private string $label;
 
-    #[ORM\Column(length: 20, enumType: VehicleStatus::class)]
-    private VehicleStatus $status = VehicleStatus::Pending;
+    #[ORM\Column(type: 'vehicle_status', length: 20)]
+    private VehicleStatus $status = VehicleStatus::PENDING;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'proposedVehicles')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]

@@ -28,8 +28,8 @@ class Report
     #[ORM\Column(type: Types::TEXT)]
     private string $reason;
 
-    #[ORM\Column(length: 20, enumType: ReportStatus::class)]
-    private ReportStatus $status = ReportStatus::Pending;
+    #[ORM\Column(type: 'report_status', length: 20)]
+    private ReportStatus $status = ReportStatus::PENDING;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;

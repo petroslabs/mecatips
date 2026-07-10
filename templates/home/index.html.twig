@@ -7,7 +7,7 @@
     <p>Les petits conseils d'atelier qu'on ne trouve pas dans les tutos — recensés et vérifiés par un comité de mécaniciens.</p>
 
     {% if app.user %}
-        <p>Bienvenue, <strong>{{ app.user.pseudo }}</strong>.</p>
+        <p>Bienvenue, <strong>{{ app.user.username }}</strong>.</p>
         <p><a href="{{ path('tip_new') }}" class="btn">Proposer un tip</a></p>
     {% else %}
         <p><a href="{{ path('registration') }}" class="btn">Créer un compte</a></p>

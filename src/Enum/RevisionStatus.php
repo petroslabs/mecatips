@@ -6,7 +6,9 @@ namespace App\Enum;
 
 enum RevisionStatus: string
 {
-    case Pending = 'pending';
-    case Approved = 'approved';
-    case Rejected = 'rejected';
+    use EnumNameLookup;
+
+    case PENDING = 'En attente';
+    case APPROVED = 'Approuvée';
+    case REJECTED = 'Refusée';
 }

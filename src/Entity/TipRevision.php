@@ -29,8 +29,8 @@ class TipRevision
     #[ORM\Column(type: Types::TEXT)]
     private string $content;
 
-    #[ORM\Column(length: 20, enumType: RevisionStatus::class)]
-    private RevisionStatus $status = RevisionStatus::Pending;
+    #[ORM\Column(type: 'revision_status', length: 20)]
+    private RevisionStatus $status = RevisionStatus::PENDING;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $submittedAt;

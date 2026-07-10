@@ -25,7 +25,7 @@
             <nav class="site-nav">
                 {% if app.user %}
                     <a href="{{ path('tip_new') }}" class="site-nav__cta">Proposer un tip</a>
-                    <span class="site-nav__user">Connecté·e en tant que <strong>{{ app.user.pseudo }}</strong></span>
+                    <span class="site-nav__user">Connecté·e en tant que <strong>{{ app.user.username }}</strong></span>
                     <a href="{{ path('security_logout') }}">Déconnexion</a>
                 {% else %}
                     <a href="{{ path('security_login') }}">Connexion</a>

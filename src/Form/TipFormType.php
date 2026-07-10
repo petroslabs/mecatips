@@ -53,12 +53,11 @@ final class TipFormType extends AbstractType
                 'class' => TipTypeEnum::class,
                 'label' => 'Type de tip',
                 'expanded' => true,
-                'choice_label' => static fn (TipTypeEnum $type) => match ($type) {
-                    TipTypeEnum::Astuce => 'Astuce technique',
-                    TipTypeEnum::Piege => 'Piège à éviter',
-                    TipTypeEnum::Prevention => 'Bonne pratique préventive',
-                    TipTypeEnum::Outillage => 'Astuce outillage',
-                },
+                // La value de l'enum porte le libellé français affiché ; le
+                // choice_value reste le name anglais stable (soumis par le
+                // formulaire), indépendant du texte d'affichage.
+                'choice_label' => static fn (TipTypeEnum $type) => $type->value,
+                'choice_value' => static fn (?TipTypeEnum $type) => $type?->name,
                 'constraints' => [
                     new NotBlank(message: 'Choisis un type de tip.'),
                 ],

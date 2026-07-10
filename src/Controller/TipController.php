@@ -98,7 +98,7 @@ final class TipController extends AbstractController
 
         $vehicle = (new Vehicle())
             ->setLabel($label)
-            ->setStatus(VehicleStatus::Pending)
+            ->setStatus(VehicleStatus::PENDING)
             ->setProposedBy($proposedBy);
 
         $entityManager->persist($vehicle);

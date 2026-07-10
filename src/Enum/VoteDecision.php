@@ -6,6 +6,8 @@ namespace App\Enum;
 
 enum VoteDecision: string
 {
-    case For = 'pour';
-    case Against = 'contre';
+    use EnumNameLookup;
+
+    case FOR = 'Pour';
+    case AGAINST = 'Contre';
 }

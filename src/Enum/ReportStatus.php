@@ -6,7 +6,9 @@ namespace App\Enum;
 
 enum ReportStatus: string
 {
-    case Pending = 'pending';
-    case Reviewed = 'reviewed';
-    case Dismissed = 'dismissed';
+    use EnumNameLookup;
+
+    case PENDING = 'En attente';
+    case REVIEWED = 'Traité';
+    case DISMISSED = 'Classé sans suite';
 }

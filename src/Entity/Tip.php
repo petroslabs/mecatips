@@ -32,11 +32,11 @@ class Tip
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Vehicle $vehicle = null;
 
-    #[ORM\Column(length: 20, enumType: TipType::class)]
+    #[ORM\Column(type: 'tip_type', length: 20)]
     private TipType $type;
 
-    #[ORM\Column(length: 20, enumType: TipStatus::class)]
-    private TipStatus $status = TipStatus::Pending;
+    #[ORM\Column(type: 'tip_status', length: 20)]
+    private TipStatus $status = TipStatus::PENDING;
 
     #[ORM\Column(length: 200, nullable: true)]
     private ?string $publishedTitle = null;

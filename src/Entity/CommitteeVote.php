@@ -26,7 +26,7 @@ class CommitteeVote
     #[ORM\JoinColumn(nullable: false)]
     private User $member;
 
-    #[ORM\Column(length: 10, enumType: VoteDecision::class)]
+    #[ORM\Column(type: 'vote_decision', length: 10)]
     private VoteDecision $decision;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

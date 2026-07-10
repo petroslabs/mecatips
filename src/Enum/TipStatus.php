@@ -6,7 +6,9 @@ namespace App\Enum;
 
 enum TipStatus: string
 {
-    case Pending = 'pending';
-    case Published = 'published';
-    case Rejected = 'rejected';
+    use EnumNameLookup;
+
+    case PENDING = 'En attente de validation';
+    case PUBLISHED = 'Publié';
+    case REJECTED = 'Refusé';
 }

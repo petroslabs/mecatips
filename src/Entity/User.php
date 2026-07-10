@@ -17,9 +17,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'app_user')]
 #[ORM\UniqueConstraint(name: 'uniq_user_email', fields: ['email'])]
-#[ORM\UniqueConstraint(name: 'uniq_user_pseudo', fields: ['pseudo'])]
+#[ORM\UniqueConstraint(name: 'uniq_user_username', fields: ['username'])]
 #[UniqueEntity(fields: ['email'], message: 'Un compte existe déjà avec cet email.')]
-#[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déjà pris.')]
+#[UniqueEntity(fields: ['username'], message: 'Ce pseudo est déjà pris.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 50)]
     #[Assert\Regex(pattern: '/^[\w\-]+$/u', message: 'Le pseudo ne peut contenir que des lettres, chiffres, tirets et underscores.')]
-    private string $pseudo;
+    private string $username;
 
     #[ORM\Column]
     private string $password;
@@ -83,14 +83,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPseudo(): string
+    public function getUsername(): string
     {
-        return $this->pseudo;
+        return $this->username;
     }
 
-    public function setPseudo(string $pseudo): static
+    public function setUsername(string $username): static
     {
-        $this->pseudo = $pseudo;
+        $this->username = $username;
 
         return $this;
     }

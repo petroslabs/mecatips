@@ -6,8 +6,10 @@ namespace App\Enum;
 
 enum TipType: string
 {
-    case Astuce = 'astuce';
-    case Piege = 'piege';
-    case Prevention = 'prevention';
-    case Outillage = 'outillage';
+    use EnumNameLookup;
+
+    case ADVICE = 'Astuce technique';
+    case PITFALL = 'Piège à éviter';
+    case PREVENTION = 'Bonne pratique préventive';
+    case TOOLING = 'Astuce outillage';
 }

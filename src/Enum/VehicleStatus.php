@@ -6,6 +6,8 @@ namespace App\Enum;
 
 enum VehicleStatus: string
 {
-    case Pending = 'pending';
-    case Validated = 'validated';
+    use EnumNameLookup;
+
+    case PENDING = 'En attente de validation';
+    case VALIDATED = 'Validé';
 }
