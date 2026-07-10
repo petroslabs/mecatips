@@ -60,7 +60,7 @@
                     {% endif %}
                     <a href="{{ path('tip_mine') }}">Mes tips</a>
                     <a href="{{ path('tip_new') }}" class="site-nav__cta">Proposer un tip</a>
-                    <span class="site-nav__user">Connecté·e en tant que <strong>{{ app.user.username }}</strong></span>
+                    <span class="site-nav__user">Connecté·e en tant que <a href="{{ path('contributor_show', { username: app.user.username }) }}"><strong>{{ app.user.username }}</strong></a></span>
                     <a href="{{ path('security_logout') }}">Déconnexion</a>
                 {% else %}
                     <a href="{{ path('security_login') }}">Connexion</a>

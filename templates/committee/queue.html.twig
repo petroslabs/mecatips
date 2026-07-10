@@ -25,7 +25,7 @@
             <h2>{{ revision.title }}</h2>
             <p>{{ revision.content }}</p>
 
-            <p class="review-card__author">Proposé par <strong>{{ tip.author.username }}</strong> le {{ revision.submittedAt|date('d/m/Y à H:i') }}</p>
+            <p class="review-card__author">Proposé par <a href="{{ path('contributor_show', { username: tip.author.username }) }}"><strong>{{ tip.author.username }}</strong></a> le {{ revision.submittedAt|date('d/m/Y à H:i') }}</p>
 
             {% if revision.votes|length > 0 %}
                 <div class="review-card__votes">

@@ -16,7 +16,7 @@
                     <span class="stamp">{{ ranking.badge.value }}</span>
                     <div class="ranking-list__main">
                         <div class="ranking-list__name">
-                            <strong>{{ ranking.user.username }}</strong>
+                            <a href="{{ path('contributor_show', { username: ranking.user.username }) }}"><strong>{{ ranking.user.username }}</strong></a>
                         </div>
                         <div class="ranking-list__detail">
                             {{ ranking.publishedTipsCount }} tip{{ ranking.publishedTipsCount > 1 ? 's' : '' }} validé{{ ranking.publishedTipsCount > 1 ? 's' : '' }}

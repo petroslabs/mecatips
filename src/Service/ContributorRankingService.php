@@ -78,6 +78,47 @@ final class ContributorRankingService
         return $rankings;
     }
 
+    /** Mêmes métriques que getRanking(), calculées pour un seul contributeur (profil public). */
+    public function getForUser(User $user): ContributorRanking
+    {
+        $publishedTipsCount = $this->countForUser(
+            'SELECT COUNT(t.id) FROM ' . Tip::class . ' t WHERE t.status = :status AND t.author = :author',
+            $user,
+        );
+
+        $usefulCount = $this->countForUser(
+            'SELECT COUNT(uv.id) FROM ' . UsefulVote::class . ' uv
+             JOIN uv.tip t
+             WHERE t.status = :status AND t.author = :author AND uv.useful = true',
+            $user,
+        );
+
+        $notUsefulCount = $this->countForUser(
+            'SELECT COUNT(uv.id) FROM ' . UsefulVote::class . ' uv
+             JOIN uv.tip t
+             WHERE t.status = :status AND t.author = :author AND uv.useful = false',
+            $user,
+        );
+
+        $usefulScore = $usefulCount - $notUsefulCount;
+
+        return new ContributorRanking(
+            user: $user,
+            publishedTipsCount: $publishedTipsCount,
+            usefulScore: $usefulScore,
+            totalScore: $publishedTipsCount + $usefulScore,
+            badge: ContributorBadge::fromPublishedTipsCount($publishedTipsCount),
+        );
+    }
+
+    private function countForUser(string $dql, User $user): int
+    {
+        return (int) $this->entityManager->createQuery($dql)
+            ->setParameter('status', TipStatus::PUBLISHED->name)
+            ->setParameter('author', $user)
+            ->getSingleScalarResult();
+    }
+
     /** @return array<int, int> authorId => count */
     private function countByAuthor(string $dql): array
     {

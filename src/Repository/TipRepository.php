@@ -38,6 +38,21 @@ class TipRepository extends ServiceEntityRepository
     }
 
     /**
+     * Contrairement à findByAuthor() (utilisé par "mes tips", qui montre
+     * aussi les tips en attente/refusés à leur propre auteur), le profil
+     * public ne doit exposer que les tips déjà publiés.
+     *
+     * @return list<Tip>
+     */
+    public function findPublishedByAuthor(User $author): array
+    {
+        return $this->findBy(
+            ['status' => TipStatus::PUBLISHED, 'author' => $author],
+            ['publishedAt' => 'DESC'],
+        );
+    }
+
+    /**
      * Tips propres à ce véhicule uniquement (pas les tips "tous véhicules")
      * — contrairement à search(), la page véhicule ne doit pas se remplir de
      * tips génériques : ça viderait de son sens le 404 "aucun tip pour ce

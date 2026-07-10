@@ -767,6 +767,27 @@ select:focus-visible {
 }
 
 /* ==========================================================================
+   Profil public contributeur
+   ========================================================================== */
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-header h1 {
+    margin-bottom: 0.2rem;
+}
+
+.profile-header__stats {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+/* ==========================================================================
    Suivi des soumissions
    ========================================================================== */
 

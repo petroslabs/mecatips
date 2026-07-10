@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ contributor.username }} — MécaTips{% endblock %}
+
+{% block body %}
+    <div class="profile-header">
+        <span class="stamp">{{ ranking.badge.value }}</span>
+        <div>
+            <h1>{{ contributor.username }}</h1>
+            <p class="profile-header__stats">
+                {{ ranking.publishedTipsCount }} tip{{ ranking.publishedTipsCount > 1 ? 's' : '' }} validé{{ ranking.publishedTipsCount > 1 ? 's' : '' }}
+                · score d'utilité {{ ranking.usefulScore >= 0 ? '+' : '' }}{{ ranking.usefulScore }}
+                · score total {{ ranking.totalScore }}
+            </p>
+        </div>
+    </div>
+
+    {% if tips is empty %}
+        <p>Aucun tip publié pour l'instant.</p>
+    {% endif %}
+
+    <ul class="tip-list">
+        {% for tip in tips %}
+            <li class="tip-list__item">
+                <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
+                <div class="tip-list__meta">
+                    <a href="{{ path('tip_list', { category: tip.category.parent.slug, operation: tip.category.slug }) }}">{{ tip.category.parent.name }} — {{ tip.category.name }}</a>
+                    <span>{{ tip.type.value }}</span>
+                    {% if tip.vehicle %}
+                        <a href="{{ path('vehicle_show', { id: tip.vehicle.id }) }}">{{ tip.vehicle.label }}</a>
+                    {% else %}
+                        <span>Tous véhicules</span>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
