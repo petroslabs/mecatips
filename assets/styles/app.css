@@ -178,3 +178,68 @@ button:hover,
 .btn:hover {
     filter: brightness(0.95);
 }
+
+.review-card {
+    border: 1px solid var(--steel);
+    border-radius: 3px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    background: white;
+}
+
+.review-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--steel);
+    margin-bottom: 0.5rem;
+}
+
+.review-card__badge {
+    background: var(--signal);
+    color: var(--graphite);
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+.review-card__author {
+    font-size: 0.85rem;
+    color: var(--steel);
+}
+
+.review-card__votes {
+    background: var(--paper);
+    border-radius: 3px;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.review-card__votes ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.2rem;
+}
+
+.review-card__done {
+    color: var(--patina);
+    font-weight: 600;
+}
+
+.review-card__form {
+    border-top: 1px dashed var(--steel);
+    padding-top: 1rem;
+}
+
+.review-card__decision {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.review-card__decision label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 400;
+}

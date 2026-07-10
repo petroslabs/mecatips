@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\TipRevision;
+use App\Enum\RevisionStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,5 +17,11 @@ class TipRevisionRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TipRevision::class);
+    }
+
+    /** @return list<TipRevision> */
+    public function findPending(): array
+    {
+        return $this->findBy(['status' => RevisionStatus::PENDING], ['submittedAt' => 'ASC']);
     }
 }

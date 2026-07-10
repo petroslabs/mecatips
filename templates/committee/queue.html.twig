@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}File de validation — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>File de validation</h1>
+
+    {% if items is empty %}
+        <p>Aucun tip en attente pour le moment.</p>
+    {% endif %}
+
+    {% for item in items %}
+        {% set revision = item.revision %}
+        {% set tip = revision.tip %}
+        <article class="review-card">
+            <div class="review-card__meta">
+                <span class="review-card__badge">
+                    {{ tip.status.name == 'PUBLISHED' ? 'Modification proposée' : 'Nouvelle soumission' }}
+                </span>
+                <span>{{ tip.category.name }}</span>
+                <span>{{ tip.type.value }}</span>
+                <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
+            </div>
+
+            <h2>{{ revision.title }}</h2>
+            <p>{{ revision.content }}</p>
+
+            <p class="review-card__author">Proposé par <strong>{{ tip.author.username }}</strong> le {{ revision.submittedAt|date('d/m/Y à H:i') }}</p>
+
+            {% if revision.votes|length > 0 %}
+                <div class="review-card__votes">
+                    <p><strong>{{ item.for }}</strong> pour · <strong>{{ item.against }}</strong> contre</p>
+                    <ul>
+                        {% for vote in revision.votes %}
+                            <li>
+                                <strong>{{ vote.member.username }}</strong> — {{ vote.decision.value }}
+                                {% if vote.comment %}: {{ vote.comment }}{% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% if item.hasVoted %}
+                <p class="review-card__done">Tu as déjà voté sur ce tip.</p>
+            {% else %}
+                <form method="post" action="{{ path('committee_vote', { id: revision.id }) }}" class="review-card__form">
+                    <input type="hidden" name="_token" value="{{ csrf_token('vote-' ~ revision.id) }}">
+
+                    <div class="review-card__decision">
+                        <label><input type="radio" name="decision" value="FOR" required> Pour</label>
+                        <label><input type="radio" name="decision" value="AGAINST" required> Contre</label>
+                    </div>
+
+                    <textarea name="comment" rows="2" placeholder="Commentaire (obligatoire en cas de vote contre)"></textarea>
+
+                    <button type="submit">Voter</button>
+                </form>
+            {% endif %}
+        </article>
+    {% endfor %}
+{% endblock %}
