@@ -92,7 +92,7 @@ final class TipController extends AbstractController
         return $this->render('tip/list.html.twig', [
             'category' => $operationEntity->getParent(),
             'operation' => $operationEntity,
-            'tips' => $tipRepository->search($operationEntity, $vehicle, $type, null, null, $sort),
+            'tips' => $tipRepository->search($operationEntity, $vehicle, $type, null, $sort),
             'vehicles' => $vehicleRepository->findWithPublishedTips(),
             'types' => TipType::cases(),
             'filters' => [
@@ -110,27 +110,23 @@ final class TipController extends AbstractController
         TipRepository $tipRepository,
         CategoryRepository $categoryRepository,
         VehicleRepository $vehicleRepository,
-        TagRepository $tagRepository,
     ): Response {
         $category = $this->findEntityFromQuery($request, 'category', $categoryRepository);
         $vehicle = $this->findEntityFromQuery($request, 'vehicle', $vehicleRepository);
-        $tag = $this->findEntityFromQuery($request, 'tag', $tagRepository);
         $type = TipType::tryFromName((string) $request->query->get('type', ''));
         $query = trim((string) $request->query->get('q', ''));
         $sort = $request->query->get('sort') === 'useful' ? 'useful' : 'recent';
 
-        $hasFilters = $category !== null || $vehicle !== null || $tag !== null || $type !== null || $query !== '';
+        $hasFilters = $category !== null || $vehicle !== null || $type !== null || $query !== '';
 
         return $this->render('tip/search.html.twig', [
-            'tips' => $tipRepository->search($category, $vehicle, $type, $tag, $query !== '' ? $query : null, $sort),
+            'tips' => $tipRepository->search($category, $vehicle, $type, $query !== '' ? $query : null, $sort),
             'categories' => $categoryRepository->findOperations(),
             'vehicles' => $vehicleRepository->findWithPublishedTips(),
-            'tags' => $tagRepository->findBy([], ['label' => 'ASC']),
             'types' => TipType::cases(),
             'filters' => [
                 'category' => $category,
                 'vehicle' => $vehicle,
-                'tag' => $tag,
                 'type' => $type,
                 'q' => $query,
                 'sort' => $sort,

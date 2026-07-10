@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Category;
-use App\Entity\Tag;
 use App\Entity\Tip;
 use App\Entity\User;
 use App\Entity\UsefulVote;
@@ -79,7 +78,6 @@ class TipRepository extends ServiceEntityRepository
         ?Category $category,
         ?Vehicle $vehicle,
         ?TipType $type,
-        ?Tag $tag,
         ?string $query,
         string $sort,
     ): array {
@@ -112,10 +110,6 @@ class TipRepository extends ServiceEntityRepository
 
         if ($type !== null) {
             $qb->andWhere('t.type = :type')->setParameter('type', $type->name);
-        }
-
-        if ($tag !== null) {
-            $qb->join('t.tags', 'tg')->andWhere('tg = :tag')->setParameter('tag', $tag);
         }
 
         if ($query !== null && $query !== '') {

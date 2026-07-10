@@ -49,16 +49,6 @@
         </div>
 
         <div>
-            <label for="filter-tag">Tag</label>
-            <select id="filter-tag" name="tag">
-                <option value="">Tous</option>
-                {% for tag in tags %}
-                    <option value="{{ tag.id }}" {{ filters.tag and filters.tag.id == tag.id ? 'selected' }}>{{ tag.label }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
             <label for="filter-sort">Tri</label>
             <select id="filter-sort" name="sort">
                 <option value="recent" {{ filters.sort == 'recent' ? 'selected' }}>Plus récents</option>
