@@ -15,7 +15,7 @@ final class VehicleController extends AbstractController
     #[Route('/vehicles/{id}', name: 'vehicle_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Vehicle $vehicle, TipRepository $tipRepository): Response
     {
-        $tips = $tipRepository->search(null, $vehicle, null, null, null, 'recent');
+        $tips = $tipRepository->findPublishedForVehicle($vehicle);
 
         // Pas de page pour un véhicule sans aucun tip publié — qu'il soit
         // encore "pending" ou juste sans contenu, il n'y a rien à montrer.

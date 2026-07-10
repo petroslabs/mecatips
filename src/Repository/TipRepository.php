@@ -38,6 +38,22 @@ class TipRepository extends ServiceEntityRepository
     }
 
     /**
+     * Tips propres à ce véhicule uniquement (pas les tips "tous véhicules")
+     * — contrairement à search(), la page véhicule ne doit pas se remplir de
+     * tips génériques : ça viderait de son sens le 404 "aucun tip pour ce
+     * véhicule" et ferait apparaître du contenu pour n'importe quel id.
+     *
+     * @return list<Tip>
+     */
+    public function findPublishedForVehicle(Vehicle $vehicle): array
+    {
+        return $this->findBy(
+            ['status' => TipStatus::PUBLISHED, 'vehicle' => $vehicle],
+            ['publishedAt' => 'DESC'],
+        );
+    }
+
+    /**
      * Recherche/filtres sur les tips publiés (ROADMAP.md — visiteur).
      *
      * @param 'recent'|'useful' $sort
@@ -64,8 +80,19 @@ class TipRepository extends ServiceEntityRepository
             $qb->andWhere('t.category = :category')->setParameter('category', $category);
         }
 
+        // Un tip "tous véhicules" reste pertinent quel que soit le véhicule du
+        // visiteur : aucun véhicule choisi => uniquement les tips généraux ;
+        // véhicule choisi => tips généraux + tips propres à ce véhicule
+        // (additif, pas un remplacement). orX() explicite plutôt qu'une
+        // condition en chaîne de caractères, pour garantir le parenthésage
+        // face au AND du reste de la requête.
         if ($vehicle !== null) {
-            $qb->andWhere('t.vehicle = :vehicle')->setParameter('vehicle', $vehicle);
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->isNull('t.vehicle'),
+                $qb->expr()->eq('t.vehicle', ':vehicle'),
+            ))->setParameter('vehicle', $vehicle);
+        } else {
+            $qb->andWhere($qb->expr()->isNull('t.vehicle'));
         }
 
         if ($type !== null) {

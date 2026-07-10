@@ -31,7 +31,7 @@
         <div>
             <label for="filter-vehicle">Véhicule</label>
             <select id="filter-vehicle" name="vehicle">
-                <option value="">Tous</option>
+                <option value="">Tips généraux</option>
                 {% for vehicle in vehicles %}
                     <option value="{{ vehicle.id }}" {{ filters.vehicle and filters.vehicle.id == vehicle.id ? 'selected' }}>{{ vehicle.label }}</option>
                 {% endfor %}
