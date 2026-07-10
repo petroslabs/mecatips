@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RankingController extends AbstractController
 {
-    #[Route('/classement', name: 'ranking_index', methods: ['GET'])]
+    #[Route('/ranking', name: 'ranking_index', methods: ['GET'])]
     public function index(ContributorRankingService $rankingService): Response
     {
         return $this->render('ranking/index.html.twig', [

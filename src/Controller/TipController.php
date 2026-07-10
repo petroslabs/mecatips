@@ -58,7 +58,7 @@ final class TipController extends AbstractController
         ]);
     }
 
-    #[Route('/tips/{id}/vote-utile', name: 'tip_vote_useful', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/tips/{id}/vote-useful', name: 'tip_vote_useful', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function voteUseful(
         Tip $tip,
@@ -101,7 +101,7 @@ final class TipController extends AbstractController
         return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
     }
 
-    #[Route('/tips/nouveau', name: 'tip_new', methods: ['GET', 'POST'])]
+    #[Route('/tips/new', name: 'tip_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,

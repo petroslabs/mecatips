@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class CommitteeController extends AbstractController
 {
-    #[Route('/comite', name: 'committee_queue', methods: ['GET'])]
+    #[Route('/committee', name: 'committee_queue', methods: ['GET'])]
     #[IsGranted('ROLE_COMMITTEE')]
     public function queue(TipRevisionRepository $revisionRepository, CommitteeVoteRepository $voteRepository): Response
     {
@@ -47,7 +47,7 @@ final class CommitteeController extends AbstractController
         ]);
     }
 
-    #[Route('/comite/{id}/voter', name: 'committee_vote', methods: ['POST'])]
+    #[Route('/committee/{id}/vote', name: 'committee_vote', methods: ['POST'])]
     #[IsGranted('ROLE_COMMITTEE')]
     public function vote(
         TipRevision $revision,

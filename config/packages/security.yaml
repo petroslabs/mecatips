@@ -39,9 +39,9 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        - { path: ^/inscription, roles: PUBLIC_ACCESS }
-        - { path: ^/connexion, roles: PUBLIC_ACCESS }
-        - { path: ^/deconnexion, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/logout, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

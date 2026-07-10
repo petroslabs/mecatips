@@ -17,7 +17,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class RegistrationController extends AbstractController
 {
-    #[Route('/inscription', name: 'registration', methods: ['GET', 'POST'])]
+    #[Route('/register', name: 'registration', methods: ['GET', 'POST'])]
     public function register(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
