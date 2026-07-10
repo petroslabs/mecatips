@@ -265,8 +265,25 @@ a {
 }
 
 .site-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     color: var(--header-ink);
     text-decoration: none;
+}
+
+.nav-icon {
+    width: 1.1em;
+    height: 1.1em;
+    flex-shrink: 0;
+}
+
+.nav-icon-only {
+    gap: 0 !important;
+}
+
+.nav-icon-only .notification-badge {
+    margin-left: 0.3rem;
 }
 
 .site-nav a:hover {
@@ -282,9 +299,65 @@ a {
     font-weight: 600;
 }
 
-.site-nav__user {
-    color: var(--patina);
-    font-size: 0.85rem;
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+    list-style: none;
+    color: var(--header-ink);
+}
+
+.nav-dropdown summary::-webkit-details-marker {
+    display: none;
+}
+
+.nav-dropdown summary::after {
+    content: ' ▾';
+    font-size: 0.7em;
+}
+
+.nav-dropdown summary:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.nav-dropdown[open] summary {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.nav-dropdown__menu {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    min-width: 11rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    box-shadow: 0 0.6rem 1.2rem -0.4rem var(--shadow);
+    overflow: hidden;
+}
+
+.nav-dropdown__menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.85rem;
+    color: var(--ink) !important;
+    font-size: 0.88rem;
+}
+
+.nav-dropdown__menu a:hover {
+    background: var(--bg);
+    text-decoration: none !important;
 }
 
 .notification-badge {
@@ -303,14 +376,13 @@ a {
 }
 
 .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: transparent;
     border: 1px solid rgba(241, 237, 228, 0.3);
     color: var(--header-ink);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 0.35rem 0.6rem;
+    padding: 0.4rem;
     border-radius: 2px;
     cursor: pointer;
     width: auto;
