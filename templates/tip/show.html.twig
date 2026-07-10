@@ -6,7 +6,11 @@
     <div class="tip-detail__meta">
         <a href="{{ path('tip_list', { category: tip.category.parent.slug, operation: tip.category.slug }) }}">{{ tip.category.parent.name }} — {{ tip.category.name }}</a>
         <span{% if tip.type.name == 'PITFALL' %} class="marker"{% endif %}>{{ tip.type.value }}</span>
-        <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
+        {% if tip.vehicle %}
+            <a href="{{ path('vehicle_show', { id: tip.vehicle.id }) }}">{{ tip.vehicle.label }}</a>
+        {% else %}
+            <span>Tous véhicules</span>
+        {% endif %}
     </div>
 
     <h1>{{ tip.publishedTitle }}</h1>

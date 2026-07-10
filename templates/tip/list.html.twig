@@ -68,7 +68,11 @@
                 <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
                 <div class="tip-list__meta">
                     <span>{{ tip.type.value }}</span>
-                    <span>{{ tip.vehicle ? tip.vehicle.label : 'Tous véhicules' }}</span>
+                    {% if tip.vehicle %}
+                        <a href="{{ path('vehicle_show', { id: tip.vehicle.id }) }}">{{ tip.vehicle.label }}</a>
+                    {% else %}
+                        <span>Tous véhicules</span>
+                    {% endif %}
                 </div>
             </li>
         {% endfor %}

@@ -17,7 +17,11 @@
                         <div class="tip-list__meta">
                             <span>{{ featuredTip.category.parent.name }} — {{ featuredTip.category.name }}</span>
                             <span>{{ featuredTip.type.value }}</span>
-                            <span>{{ featuredTip.vehicle ? featuredTip.vehicle.label : 'Tous véhicules' }}</span>
+                            {% if featuredTip.vehicle %}
+                                <a href="{{ path('vehicle_show', { id: featuredTip.vehicle.id }) }}">{{ featuredTip.vehicle.label }}</a>
+                            {% else %}
+                                <span>Tous véhicules</span>
+                            {% endif %}
                         </div>
                     </li>
                 </ul>

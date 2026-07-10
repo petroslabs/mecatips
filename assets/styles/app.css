@@ -518,6 +518,20 @@ select:focus-visible {
     text-transform: uppercase;
 }
 
+.tip-list__meta a,
+.tip-detail__meta a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 2px;
+}
+
+.tip-list__meta a:hover,
+.tip-detail__meta a:hover {
+    color: var(--link);
+    text-decoration-color: currentColor;
+}
+
 .review-card__meta {
     display: flex;
     flex-wrap: wrap;

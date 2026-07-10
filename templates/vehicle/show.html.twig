@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ vehicle.label }} — MécaTips{% endblock %}
+
+{% block body %}
+    <nav class="breadcrumb">
+        <a href="{{ path('tip_index') }}">Véhicules</a>
+        <span class="breadcrumb__sep">/</span>
+        <span>{{ vehicle.label }}</span>
+    </nav>
+
+    <h1>{{ vehicle.label }}</h1>
+    <p class="browse-intro">{{ tips|length }} tip{{ tips|length > 1 ? 's' : '' }} publié{{ tips|length > 1 ? 's' : '' }} pour ce véhicule.</p>
+
+    <ul class="tip-list">
+        {% for tip in tips %}
+            <li class="tip-list__item">
+                <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
+                <div class="tip-list__meta">
+                    <a href="{{ path('tip_list', { category: tip.category.parent.slug, operation: tip.category.slug }) }}">{{ tip.category.parent.name }} — {{ tip.category.name }}</a>
+                    <span>{{ tip.type.value }}</span>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
