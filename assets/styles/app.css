@@ -681,6 +681,22 @@ select:focus-visible {
     color: var(--muted);
 }
 
+.tip-detail__favorite-form {
+    margin: 0.75rem 0 0;
+}
+
+.favorite-btn {
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--border);
+}
+
+.favorite-btn--active {
+    background: var(--signal);
+    border-color: var(--signal);
+    color: var(--graphite);
+}
+
 .tip-detail__vote {
     border-top: 1px solid var(--border);
     margin-top: 1.5rem;

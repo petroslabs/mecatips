@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Favoris — MécaTips{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block body %}
+    <h1>Tes favoris</h1>
+
+    {% if favorites is empty %}
+        <p>Rien pour l'instant — le "☆ Ajouter aux favoris" sur une fiche tip te permet de retrouver ici les tips que tu sais que tu referas.</p>
+    {% endif %}
+
+    <ul class="tip-list">
+        {% for favorite in favorites %}
+            {% set tip = favorite.tip %}
+            <li class="tip-list__item">
+                <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
+                <div class="tip-list__meta">
+                    <a href="{{ path('tip_list', { category: tip.category.parent.slug, operation: tip.category.slug }) }}">{{ tip.category.parent.name }} — {{ tip.category.name }}</a>
+                    <span>{{ tip.type.value }}</span>
+                    {% if tip.vehicle %}
+                        <a href="{{ path('vehicle_show', { id: tip.vehicle.id }) }}">{{ tip.vehicle.label }}</a>
+                    {% else %}
+                        <span>Tous véhicules</span>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

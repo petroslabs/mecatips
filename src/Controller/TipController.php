@@ -16,6 +16,7 @@ use App\Enum\VehicleStatus;
 use App\Enum\VoteDecision;
 use App\Form\TipFormType;
 use App\Repository\CategoryRepository;
+use App\Repository\FavoriteRepository;
 use App\Repository\TagRepository;
 use App\Repository\TipRepository;
 use App\Repository\UsefulVoteRepository;
@@ -151,17 +152,19 @@ final class TipController extends AbstractController
     }
 
     #[Route('/tips/{id}', name: 'tip_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Tip $tip, UsefulVoteRepository $usefulVoteRepository): Response
+    public function show(Tip $tip, UsefulVoteRepository $usefulVoteRepository, FavoriteRepository $favoriteRepository): Response
     {
         if ($tip->getStatus() !== TipStatus::PUBLISHED) {
             throw $this->createNotFoundException();
         }
 
         $myVote = null;
+        $isFavorited = false;
         $user = $this->getUser();
         if ($user instanceof User) {
             $vote = $usefulVoteRepository->findOneBy(['tip' => $tip, 'user' => $user]);
             $myVote = $vote?->isUseful();
+            $isFavorited = $favoriteRepository->findOneBy(['tip' => $tip, 'user' => $user]) !== null;
         }
 
         return $this->render('tip/show.html.twig', [
@@ -169,6 +172,7 @@ final class TipController extends AbstractController
             'usefulCount' => $usefulVoteRepository->count(['tip' => $tip, 'useful' => true]),
             'notUsefulCount' => $usefulVoteRepository->count(['tip' => $tip, 'useful' => false]),
             'myVote' => $myVote,
+            'isFavorited' => $isFavorited,
         ]);
     }
 

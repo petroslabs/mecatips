@@ -69,6 +69,7 @@
                         <a href="{{ path('admin_committee_index') }}">Admin</a>
                     {% endif %}
                     <a href="{{ path('tip_mine') }}">Mes tips</a>
+                    <a href="{{ path('favorite_index') }}">Favoris</a>
                     {% set unreadCount = unread_notification_count() %}
                     <a href="{{ path('notification_index') }}">Notifications{% if unreadCount > 0 %} <span class="notification-badge">{{ unreadCount }}</span>{% endif %}</a>
                     <a href="{{ path('tip_new') }}" class="site-nav__cta">Proposer un tip</a>

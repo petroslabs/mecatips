@@ -28,6 +28,15 @@
 
     <p class="tip-detail__author">Proposé par <a href="{{ path('contributor_show', { username: tip.author.username }) }}"><strong>{{ tip.author.username }}</strong></a></p>
 
+    {% if app.user %}
+        <form method="post" action="{{ path('tip_favorite', { id: tip.id }) }}" class="tip-detail__favorite-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('favorite-' ~ tip.id) }}">
+            <button type="submit" class="favorite-btn {{ isFavorited ? 'favorite-btn--active' : '' }}">
+                {{ isFavorited ? '★ Dans tes favoris' : '☆ Ajouter aux favoris' }}
+            </button>
+        </form>
+    {% endif %}
+
     <div class="tip-detail__vote">
         <p class="tip-detail__tally">
             <strong>{{ usefulCount }}</strong> {{ usefulCount > 1 ? 'personnes ont' : 'personne a' }} trouvé ce tip utile
