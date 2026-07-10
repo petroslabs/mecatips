@@ -22,9 +22,11 @@ use App\Repository\UsefulVoteRepository;
 use App\Repository\VehicleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -253,6 +255,7 @@ final class TipController extends AbstractController
         VehicleRepository $vehicleRepository,
         TagRepository $tagRepository,
         SluggerInterface $slugger,
+        #[Target('tip_submission')] RateLimiterFactoryInterface $tipSubmissionLimiter,
     ): Response {
         $form = $this->createForm(TipFormType::class);
         $form->handleRequest($request);
@@ -270,6 +273,19 @@ final class TipController extends AbstractController
             if ($form->isValid()) {
                 /** @var User $user */
                 $user = $this->getUser();
+
+                // Anti-spam (ROADMAP.md) : un jeton consommé par soumission
+                // effectivement créée, pas par tentative — une erreur de
+                // validation corrigée puis renvoyée ne doit pas coûter de
+                // quota, seule la création d'un Tip compte comme soumission.
+                if (!$tipSubmissionLimiter->create((string) $user->getId())->consume(1)->isAccepted()) {
+                    $this->addFlash('error', 'Tu as atteint la limite de soumissions par heure, réessaie un peu plus tard.');
+
+                    return $this->render('tip/new.html.twig', [
+                        'tipForm' => $form,
+                        'vehicleLabels' => $vehicleRepository->findAllLabels(),
+                    ]);
+                }
 
                 // Un véhicule saisi fait foi même si la case "tous véhicules"
                 // est restée cochée (elle est cochée par défaut et masque le

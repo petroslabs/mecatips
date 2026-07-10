@@ -1,0 +1,11 @@
+# Anti-spam sur les soumissions de tips (ROADMAP.md, section "Transverse").
+# Comptabilisé par compte (la soumission exige déjà d'être connecté), pas par
+# IP. Limite volontairement généreuse : elle doit gêner un flood automatisé,
+# pas un contributeur qui documente plusieurs tips après une session de
+# réparation.
+framework:
+    rate_limiter:
+        tip_submission:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
