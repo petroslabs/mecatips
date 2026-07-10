@@ -59,7 +59,7 @@ Priorité à la simplicité pour maximiser le taux de contribution :
 
 - **Obligatoire** : titre + texte du tip, catégorie système (select simple), type de tip (boutons/icônes).
 - **Optionnel, mis en avant mais pas bloquant** : véhicule concerné (champ recherche unique, pas de cascade marque→modèle→moteur), avec un raccourci « valable pour tous véhicules ».
-- **Replié par défaut** : tags libres, photos, détails supplémentaires.
+- **Replié par défaut** : tags libres, détails supplémentaires. Photos/schémas repoussés en v2 (voir "Hors périmètre pour l'instant").
 
 ## Ranking & gamification
 
@@ -95,7 +95,6 @@ Badges/niveaux simples pour démarrer (ex. Apprenti / Compagnon / Expert selon l
 ### Transverse
 - Signalement d'un tip publié
 - Notifications (email/in-app) sur le statut de soumission
-- Photos/schémas joints à un tip
 - SEO — le contenu doit être trouvable via Google, pas uniquement depuis le site
 - Anti-spam / rate limiting sur les soumissions
 
@@ -104,6 +103,7 @@ Badges/niveaux simples pour démarrer (ex. Apprenti / Compagnon / Expert selon l
 - Commentaires/discussion sous un tip publié (on reste simple, on ne pollue pas la page du tip).
 - API publique / export de données.
 - Motos (repoussé en v2).
+- Photos/schémas joints à un tip (repoussé en v2).
 
 ## Direction artistique
 
