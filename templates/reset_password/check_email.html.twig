@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérifie tes emails — MécaTips{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block body %}
+    <div class="auth-page">
+        <div class="auth-card">
+            <span class="eyebrow">MécaTips</span>
+            <h1>Vérifie tes emails</h1>
+            <p>
+                Si un compte existe avec cet email, tu vas recevoir un lien pour réinitialiser ton mot de passe.
+                Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+            </p>
+            <p>Rien reçu ? Vérifie tes spams, ou <a href="{{ path('app_forgot_password_request') }}">réessaie</a>.</p>
+        </div>
+
+        <p class="auth-switch"><a href="{{ path('security_login') }}">Retour à la connexion</a></p>
+    </div>
+{% endblock %}

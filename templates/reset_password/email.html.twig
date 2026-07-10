@@ -1,0 +1,19 @@
+<div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; color: #22201b;">
+    <p style="font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem;">MécaTips</p>
+
+    <p>Salut,</p>
+
+    <p>Tu as demandé à réinitialiser ton mot de passe. Clique sur le lien ci-dessous pour en choisir un nouveau :</p>
+
+    <p>
+        <a href="{{ url('app_reset_password', { token: resetToken.token }) }}" style="color: #8f5a1f;">
+            {{ url('app_reset_password', { token: resetToken.token }) }}
+        </a>
+    </p>
+
+    <p>Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+    <p>Si tu n'es pas à l'origine de cette demande, ignore simplement cet email — ton mot de passe reste inchangé.</p>
+
+    <p>À bientôt,<br>L'équipe MécaTips</p>
+</div>

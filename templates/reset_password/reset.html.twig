@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau mot de passe — MécaTips{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block body %}
+    <div class="auth-page">
+        <div class="auth-card">
+            <span class="eyebrow">MécaTips</span>
+            <h1>Choisis un nouveau mot de passe</h1>
+
+            {{ form_start(resetForm) }}
+                {{ form_errors(resetForm) }}
+                {{ form_row(resetForm.plainPassword) }}
+
+                <button type="submit">Réinitialiser le mot de passe</button>
+            {{ form_end(resetForm) }}
+        </div>
+    </div>
+{% endblock %}

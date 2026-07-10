@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié — MécaTips{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block body %}
+    <div class="auth-page">
+        <div class="auth-card">
+            <span class="eyebrow">MécaTips</span>
+            <h1>Mot de passe oublié</h1>
+            <p>Indique ton email, on t'envoie un lien pour choisir un nouveau mot de passe.</p>
+
+            {% for flash_error in app.flashes('reset_password_error') %}
+                <div class="flash flash--error">{{ flash_error }}</div>
+            {% endfor %}
+
+            {{ form_start(requestForm) }}
+                {{ form_errors(requestForm) }}
+                {{ form_row(requestForm.email) }}
+
+                <button type="submit">Envoyer le lien</button>
+            {{ form_end(requestForm) }}
+        </div>
+
+        <p class="auth-switch"><a href="{{ path('security_login') }}">Retour à la connexion</a></p>
+    </div>
+{% endblock %}

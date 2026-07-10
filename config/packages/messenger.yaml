@@ -18,7 +18,13 @@ framework:
             messenger.bus.default: []
 
         routing:
-            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            # SendEmailMessage volontairement pas routé vers "async" : ça
+            # suppose un worker (messenger:consume) qui tourne en permanence,
+            # jamais mis en place dans cette infra (aucun service dédié dans
+            # le Dockerfile/compose). Pour le volume d'emails de MécaTips
+            # (mot de passe oublié), l'envoi synchrone est plus simple et ne
+            # laisse pas un email se coincer silencieusement dans une file
+            # jamais consommée.
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
 
