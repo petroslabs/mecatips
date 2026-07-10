@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des véhicules — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>Base véhicules</h1>
+    <p>Valide les véhicules proposés par les contributeurs, et fusionne les doublons (ex. "Golf 4" / "Golf IV" / "VW Golf 4") : la fusion réaffecte tous les tips du doublon vers le véhicule cible, puis le supprime.</p>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Véhicule</th>
+                <th>Statut</th>
+                <th>Tips</th>
+                <th>Proposé par</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehicle in vehicles %}
+                <tr>
+                    <td>{{ vehicle.label }}</td>
+                    <td>
+                        <span class="badge">{{ vehicle.status.value }}</span>
+                    </td>
+                    <td>{{ vehicle.tips|length }}</td>
+                    <td>{{ vehicle.proposedBy ? vehicle.proposedBy.username : '—' }}</td>
+                    <td>
+                        {% if vehicle.status.name == 'PENDING' %}
+                            <form method="post" action="{{ path('committee_vehicle_validate', { id: vehicle.id }) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('validate-vehicle-' ~ vehicle.id) }}">
+                                <button type="submit">Valider</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if vehicles|length > 1 %}
+                            <form method="post" action="{{ path('committee_vehicle_merge', { id: vehicle.id }) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('merge-vehicle-' ~ vehicle.id) }}">
+                                <select name="target" required>
+                                    <option value="">Fusionner dans...</option>
+                                    {% for other in vehicles %}
+                                        {% if other.id != vehicle.id %}
+                                            <option value="{{ other.id }}">{{ other.label }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn-danger">Fusionner</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

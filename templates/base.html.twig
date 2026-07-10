@@ -53,6 +53,7 @@
                     {% if is_granted('ROLE_COMMITTEE') %}
                         <a href="{{ path('committee_queue') }}">Comité</a>
                         <a href="{{ path('committee_reports') }}">Signalements</a>
+                        <a href="{{ path('committee_vehicles') }}">Véhicules</a>
                     {% endif %}
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('admin_committee_index') }}">Admin</a>
