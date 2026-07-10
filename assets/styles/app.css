@@ -436,3 +436,41 @@ button:hover,
     margin: 0;
     padding-left: 1.2rem;
 }
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--steel);
+}
+
+.admin-table .badge {
+    background: var(--brass);
+    color: var(--graphite);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.5rem;
+    border-radius: 2px;
+    margin-right: 0.3rem;
+}
+
+.admin-table form {
+    display: block;
+}
+
+.admin-table button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.7rem;
+}
+
+.admin-table .btn-danger {
+    background: #a63d2d;
+    color: white;
+}

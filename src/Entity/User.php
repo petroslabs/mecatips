@@ -114,6 +114,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * Ajoute un rôle au tableau brut stocké (pas la liste effective de
+     * getRoles(), qui y ajoute toujours ROLE_USER sans le persister).
+     */
+    public function addRole(string $role): static
+    {
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): static
+    {
+        $this->roles = array_values(array_diff($this->roles, [$role]));
+
+        return $this;
+    }
+
     public function getPassword(): string
     {
         return $this->password;

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion du comité — MécaTips{% endblock %}
+
+{% block body %}
+    <h1>Membres du comité</h1>
+    <p>Ajoute ou retire des comptes du comité de validation. L'attribution du rôle admin ne se fait pas ici.</p>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Email</th>
+                <th>Rôles</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                {% set isCommittee = 'ROLE_COMMITTEE' in user.roles %}
+                {% set isAdmin = 'ROLE_ADMIN' in user.roles %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if isAdmin %}<span class="badge">Admin</span>{% endif %}
+                        {% if isCommittee %}<span class="badge">Comité</span>{% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{{ path(isCommittee ? 'admin_committee_revoke' : 'admin_committee_grant', { id: user.id }) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('admin-committee-' ~ user.id) }}">
+                            <button type="submit" class="{{ isCommittee ? 'btn-danger' : '' }}">
+                                {{ isCommittee ? 'Retirer du comité' : 'Ajouter au comité' }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

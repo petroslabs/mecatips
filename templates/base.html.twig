@@ -29,6 +29,9 @@
                     {% if is_granted('ROLE_COMMITTEE') %}
                         <a href="{{ path('committee_queue') }}">Comité</a>
                     {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('admin_committee_index') }}">Admin</a>
+                    {% endif %}
                     <a href="{{ path('tip_mine') }}">Mes tips</a>
                     <a href="{{ path('tip_new') }}" class="site-nav__cta">Proposer un tip</a>
                     <span class="site-nav__user">Connecté·e en tant que <strong>{{ app.user.username }}</strong></span>
