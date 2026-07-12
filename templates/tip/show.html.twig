@@ -5,9 +5,15 @@
 {% block og_type %}article{% endblock %}
 
 {% block body %}
+    {% set typeIcons = {
+        'ADVICE': 'info',
+        'PITFALL': 'warning',
+        'PREVENTION': 'shield',
+        'TOOLING': 'wrench',
+    } %}
+
     <div class="tip-detail__meta">
         <a href="{{ path('tip_list', { category: tip.category.parent.slug, operation: tip.category.slug }) }}">{{ tip.category.parent.name }} — {{ tip.category.name }}</a>
-        <span{% if tip.type.name == 'PITFALL' %} class="marker"{% endif %}>{{ tip.type.value }}</span>
         {% if tip.vehicle %}
             <a href="{{ path('vehicle_show', { id: tip.vehicle.id }) }}">{{ tip.vehicle.label }}</a>
         {% else %}
@@ -15,8 +21,13 @@
         {% endif %}
     </div>
 
+    <span class="tip-type-badge tip-type-badge--{{ tip.type.name|lower }}">
+        <svg class="nav-icon"><use href="#icon-{{ typeIcons[tip.type.name] }}"/></svg>
+        {{ tip.type.value }}
+    </span>
+
     <h1>{{ tip.publishedTitle }}</h1>
-    <p>{{ tip.publishedContent }}</p>
+    <p class="tip-detail__content">{{ tip.publishedContent }}</p>
 
     {% if tip.tags|length > 0 %}
         <div class="tip-detail__tags">
@@ -28,43 +39,45 @@
 
     <p class="tip-detail__author">Proposé par <a href="{{ path('contributor_show', { username: tip.author.username }) }}"><strong>{{ tip.author.username }}</strong></a></p>
 
-    {% if app.user %}
-        <form method="post" action="{{ path('tip_favorite', { id: tip.id }) }}" class="tip-detail__favorite-form">
-            <input type="hidden" name="_token" value="{{ csrf_token('favorite-' ~ tip.id) }}">
-            <button type="submit" class="favorite-btn {{ isFavorited ? 'favorite-btn--active' : '' }}">
-                {{ isFavorited ? '★ Dans tes favoris' : '☆ Ajouter aux favoris' }}
-            </button>
-        </form>
-    {% endif %}
+    <div class="tip-detail__actions">
+        <div class="tip-detail__actions-row">
+            <p class="tip-detail__tally">
+                <strong>{{ usefulCount }}</strong> {{ usefulCount > 1 ? 'personnes ont' : 'personne a' }} trouvé ce tip utile
+                {% if notUsefulCount > 0 %}· <strong>{{ notUsefulCount }}</strong> pas utile{% endif %}
+            </p>
 
-    <div class="tip-detail__vote">
-        <p class="tip-detail__tally">
-            <strong>{{ usefulCount }}</strong> {{ usefulCount > 1 ? 'personnes ont' : 'personne a' }} trouvé ce tip utile
-            {% if notUsefulCount > 0 %}· <strong>{{ notUsefulCount }}</strong> pas utile{% endif %}
-        </p>
+            {% if app.user %}
+                <div class="tip-detail__actions-buttons">
+                    <form method="post" action="{{ path('tip_vote_useful', { id: tip.id }) }}" class="tip-detail__vote-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('useful-vote-' ~ tip.id) }}">
+                        <button type="submit" name="useful" value="1" class="vote-btn {{ myVote == true ? 'vote-btn--active' : '' }}">Utile</button>
+                        <button type="submit" name="useful" value="0" class="vote-btn {{ myVote == false ? 'vote-btn--active' : '' }}">Pas utile</button>
+                    </form>
+
+                    <form method="post" action="{{ path('tip_favorite', { id: tip.id }) }}" class="tip-detail__favorite-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('favorite-' ~ tip.id) }}">
+                        <button type="submit" class="favorite-btn {{ isFavorited ? 'favorite-btn--active' : '' }}">
+                            {{ isFavorited ? '★ Dans tes favoris' : '☆ Ajouter aux favoris' }}
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <p><a href="{{ path('security_login') }}">Connecte-toi</a> pour donner ton avis.</p>
+            {% endif %}
+        </div>
 
         {% if app.user %}
-            <form method="post" action="{{ path('tip_vote_useful', { id: tip.id }) }}" class="tip-detail__vote-form">
-                <input type="hidden" name="_token" value="{{ csrf_token('useful-vote-' ~ tip.id) }}">
-                <button type="submit" name="useful" value="1" class="vote-btn {{ myVote == true ? 'vote-btn--active' : '' }}">Utile</button>
-                <button type="submit" name="useful" value="0" class="vote-btn {{ myVote == false ? 'vote-btn--active' : '' }}">Pas utile</button>
-            </form>
-        {% else %}
-            <p><a href="{{ path('security_login') }}">Connecte-toi</a> pour donner ton avis.</p>
+            <details class="report-disclosure">
+                <summary>Signaler ce tip</summary>
+                <form method="post" action="{{ path('tip_report', { id: tip.id }) }}" class="report-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token('report-' ~ tip.id) }}">
+                    <div>
+                        <label for="report-reason">Pourquoi ce signalement ?</label>
+                        <textarea id="report-reason" name="reason" rows="3" placeholder="Obsolète, erroné, potentiellement dangereux..." required></textarea>
+                    </div>
+                    <button type="submit">Envoyer le signalement</button>
+                </form>
+            </details>
         {% endif %}
     </div>
-
-    {% if app.user %}
-        <details class="report-disclosure">
-            <summary>Signaler ce tip</summary>
-            <form method="post" action="{{ path('tip_report', { id: tip.id }) }}" class="report-form">
-                <input type="hidden" name="_token" value="{{ csrf_token('report-' ~ tip.id) }}">
-                <div>
-                    <label for="report-reason">Pourquoi ce signalement ?</label>
-                    <textarea id="report-reason" name="reason" rows="3" placeholder="Obsolète, erroné, potentiellement dangereux..." required></textarea>
-                </div>
-                <button type="submit">Envoyer le signalement</button>
-            </form>
-        </details>
-    {% endif %}
 {% endblock %}

@@ -708,9 +708,11 @@ select:focus-visible {
 }
 
 /* ==========================================================================
-   Annotation manuscrite au marqueur — réservée à deux usages précis (le
-   titre de la landing, le type "piège à éviter" en fiche détail) : un
-   vocabulaire visuel cohérent, pas un effet répété partout.
+   Annotation manuscrite au marqueur — réservée à un seul usage (le titre de
+   la landing) : un vocabulaire visuel cohérent, pas un effet répété
+   partout. Le type de tip a son propre badge (.tip-type-badge ci-dessous)
+   depuis que la fiche détail a besoin de distinguer les 4 types, pas
+   seulement "piège à éviter".
    ========================================================================== */
 
 .marker {
@@ -731,11 +733,56 @@ select:focus-visible {
     pointer-events: none;
 }
 
+.tip-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.3rem 0.7rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--badge-color, var(--accent));
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.tip-type-badge svg {
+    color: var(--badge-color, var(--accent));
+}
+
+.tip-type-badge--pitfall {
+    --badge-color: var(--rust);
+}
+
+.tip-type-badge--prevention {
+    --badge-color: var(--patina);
+}
+
+.tip-type-badge--tooling {
+    --badge-color: var(--link);
+}
+
+.tip-type-badge--advice {
+    --badge-color: var(--steel);
+}
+
+.tip-detail__content {
+    font-size: 1.08rem;
+    line-height: 1.65;
+    margin-top: 1.4rem;
+}
+
 .tip-detail__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
-    margin: 1rem 0;
+    margin: 1.4rem 0;
 }
 
 .tip-detail__tags .tag {
@@ -749,12 +796,9 @@ select:focus-visible {
 }
 
 .tip-detail__author {
+    margin-top: 1.2rem;
     font-size: 0.85rem;
     color: var(--muted);
-}
-
-.tip-detail__favorite-form {
-    margin: 0.75rem 0 0;
 }
 
 .favorite-btn {
@@ -769,15 +813,34 @@ select:focus-visible {
     color: var(--graphite);
 }
 
-.tip-detail__vote {
-    border-top: 1px solid var(--border);
-    margin-top: 1.5rem;
-    padding-top: 1rem;
+/* Une seule zone pour les trois actions (vote/favoris/signalement) plutôt
+   que trois formulaires empilés sans lien visuel entre eux. */
+.tip-detail__actions {
+    margin-top: 2rem;
+    padding: 1.2rem 1.3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+}
+
+.tip-detail__actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 .tip-detail__tally {
     color: var(--muted);
     font-size: 0.9rem;
+}
+
+.tip-detail__actions-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .tip-detail__vote-form {
@@ -786,7 +849,7 @@ select:focus-visible {
 }
 
 .vote-btn {
-    background: var(--surface);
+    background: var(--bg);
     color: var(--ink);
     border: 1px solid var(--border);
 }
@@ -799,7 +862,7 @@ select:focus-visible {
 
 .report-disclosure {
     border-top: 1px dashed var(--border);
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
     padding-top: 1rem;
 }
 
