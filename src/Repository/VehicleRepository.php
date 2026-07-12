@@ -46,16 +46,21 @@ class VehicleRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /** @return list<string> */
-    public function findAllLabels(): array
+    /**
+     * Pour l'autocomplete du formulaire de soumission : suggérer les
+     * véhicules déjà connus pendant la saisie, pour inciter à réutiliser une
+     * entrée existante plutôt que d'en recréer une quasi-identique.
+     *
+     * @return list<Vehicle>
+     */
+    public function searchByLabel(string $query, int $limit = 10): array
     {
-        return array_column(
-            $this->createQueryBuilder('v')
-                ->select('v.label')
-                ->orderBy('v.label', 'ASC')
-                ->getQuery()
-                ->getScalarResult(),
-            'label',
-        );
+        return $this->createQueryBuilder('v')
+            ->where('LOWER(v.label) LIKE LOWER(:query)')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('v.label', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 }

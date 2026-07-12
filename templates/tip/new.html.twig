@@ -14,14 +14,9 @@
         {{ form_row(tipForm.category) }}
         {{ form_row(tipForm.type) }}
 
-        {{ form_row(tipForm.allVehicles) }}
+        {{ form_row(tipForm.allVehicles, { row_attr: { class: 'tip-form__all-vehicles' } }) }}
         <div class="vehicle-field">
             {{ form_row(tipForm.vehicleLabel) }}
-            <datalist id="vehicle-labels">
-                {% for label in vehicleLabels %}
-                    <option value="{{ label }}">
-                {% endfor %}
-            </datalist>
         </div>
 
         <details class="tip-form__more">

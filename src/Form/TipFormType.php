@@ -15,11 +15,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 final class TipFormType extends AbstractType
 {
+    public function __construct(private readonly UrlGeneratorInterface $urlGenerator)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -40,10 +45,11 @@ final class TipFormType extends AbstractType
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 // Le tip se rattache à une opération précise (feuille), pas à
-                // une catégorie de premier niveau — le libellé rappelle la
-                // catégorie parente pour lever l'ambiguïté entre opérations
-                // qui portent le même nom sous des catégories différentes.
-                'choice_label' => static fn (Category $category) => sprintf('%s — %s', $category->getParent()?->getName(), $category->getName()),
+                // une catégorie de premier niveau — regroupées par catégorie
+                // parente (<optgroup>, non cliquable) plutôt que de répéter
+                // le nom de la catégorie dans chaque libellé.
+                'choice_label' => static fn (Category $category) => $category->getName(),
+                'group_by' => static fn (Category $category) => $category->getParent()?->getName(),
                 'label' => 'Opération concernée',
                 'placeholder' => 'Choisir une opération',
                 'query_builder' => static fn (CategoryRepository $repository) => $repository->createQueryBuilder('c')
@@ -52,6 +58,13 @@ final class TipFormType extends AbstractType
                     ->where('c.parent IS NOT NULL')
                     ->orderBy('p.name', 'ASC')
                     ->addOrderBy('c.name', 'ASC'),
+                // Une trentaine d'opérations dans un <select> plat n'est pas
+                // pratique à parcourir — autocomplete en mode "local" (pas
+                // d'appel réseau, ux-autocomplete filtre les <option> déjà
+                // rendues côté client, largement suffisant à ce volume).
+                // TomSelect respecte nativement les <optgroup> du <select>
+                // qu'il enrichit.
+                'autocomplete' => true,
                 'constraints' => [
                     new NotBlank(message: 'Choisis une opération.'),
                 ],
@@ -74,13 +87,21 @@ final class TipFormType extends AbstractType
                 'required' => false,
                 'mapped' => false,
                 'data' => true,
-                'attr' => ['id' => 'tip_all_vehicles'],
             ])
             ->add('vehicleLabel', TextType::class, [
                 'label' => 'Véhicule concerné',
                 'required' => false,
                 'mapped' => false,
-                'attr' => ['placeholder' => 'ex : Volkswagen Golf 4 1.9 TDI PD', 'list' => 'vehicle-labels'],
+                'attr' => ['placeholder' => 'ex : Volkswagen Golf 4 1.9 TDI PD'],
+                // Suggère les véhicules déjà en base pendant la saisie, pour
+                // inciter à réutiliser une entrée existante plutôt qu'en
+                // recréer une quasi-identique — mais un texte qui ne
+                // correspond à rien reste soumis tel quel (create: true),
+                // TipController::resolveVehicle() crée alors un nouveau
+                // véhicule comme avant.
+                'autocomplete' => true,
+                'autocomplete_url' => $this->urlGenerator->generate('vehicle_autocomplete'),
+                'tom_select_options' => ['create' => true, 'maxItems' => 1],
             ])
             ->add('tagsInput', TextType::class, [
                 'label' => 'Tags (optionnel, séparés par une virgule)',

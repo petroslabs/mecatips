@@ -473,30 +473,96 @@ select {
     font-size: 0.85rem;
 }
 
-/* Type de tip : radios rendus comme un groupe de boutons plutôt qu'une liste verticale */
+/* Type de tip : chips colorées par type (même langage que .tip-type-badge
+   sur la fiche détail) plutôt que des boutons radio bruts. Le rendu Symfony
+   pour un EnumType expanded est une séquence plate input/label/input/label
+   (pas de <div> par choix, contrairement à d'autres ChoiceType) — le radio
+   natif reste présent et fonctionnel (accessibilité/focus clavier), juste
+   masqué visuellement, le label stylé en chip fait office de bouton visible.
+   Sélection par [value=...] sur le radio plutôt que par l'id auto-généré
+   (tip_form_type_0/1/2/3, indexé sur l'ordre des cases, donc fragile) — la
+   value est le name anglais stable de l'enum (choice_value ci-dessus). */
 #tip_form_type {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
-#tip_form_type > div {
-    display: flex;
-    flex-direction: row-reverse;
+#tip_form_type input[type='radio'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+#tip_form_type label {
+    display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.45rem 0.75rem;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: var(--surface);
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+#tip_form_type input[type='radio']:focus-visible + label {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+#tip_form_type input[type='radio']:checked + label {
+    border-color: var(--type-color, var(--accent));
+    background: color-mix(in srgb, var(--type-color, var(--accent)) 16%, var(--surface));
+}
+
+#tip_form_type input[value='PITFALL'] + label {
+    --type-color: var(--rust);
+}
+
+#tip_form_type input[value='PREVENTION'] + label {
+    --type-color: var(--patina);
+}
+
+#tip_form_type input[value='TOOLING'] + label {
+    --type-color: var(--link);
+}
+
+#tip_form_type input[value='ADVICE'] + label {
+    --type-color: var(--steel);
+}
+
+/* Case "Valable pour tous véhicules" : ligne propre plutôt que le
+   label/checkbox empilés en colonne qu'impose la règle générale "form > div". */
+.tip-form__all-vehicles {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem 0.9rem;
     border: 1px solid var(--border);
     border-radius: 2px;
     background: var(--surface);
 }
 
-#tip_form_type label {
-    font-weight: 400;
+.tip-form__all-vehicles label {
+    margin: 0;
+    font-weight: 500;
 }
 
-/* Masque le champ véhicule quand "tous véhicules" est coché — pas de JS nécessaire */
-.tip-form:has(#tip_all_vehicles:checked) .vehicle-field {
+.tip-form__all-vehicles input[type='checkbox'] {
+    width: auto;
+    flex-shrink: 0;
+}
+
+/* Masque le champ véhicule quand "tous véhicules" est coché — pas de JS
+   nécessaire. Bug trouvé au passage : l'id ciblait un attr id="tip_all_vehicles"
+   custom qui entrait en conflit avec l'id auto-généré par Symfony
+   (id="tip_form_allVehicles" rendu en premier, donc gagnant — le second id
+   dupliqué était silencieusement ignoré par le parseur HTML, cette règle ne
+   matchait jamais rien). Utilise directement l'id auto-généré désormais. */
+.tip-form:has(#tip_form_allVehicles:checked) .vehicle-field {
     display: none;
 }
 
@@ -508,6 +574,69 @@ select {
 .tip-form__more summary {
     cursor: pointer;
     font-weight: 600;
+}
+
+/* ux-autocomplete (TomSelect) — thème par défaut remplacé pour matcher la DA
+   plutôt que le bleu générique. Scopé sous .tip-form : la spécificité de
+   classe l'emporte sur tom-select.default.css sans dépendre de l'ordre de
+   chargement (son CSS est importé dynamiquement par le contrôleur Stimulus,
+   pas garanti de passer après app.css). */
+.tip-form .ts-wrapper {
+    font-family: var(--font-body);
+}
+
+.tip-form .ts-control {
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: var(--surface);
+    box-shadow: none;
+    padding: 0.45rem 0.6rem;
+}
+
+.tip-form .ts-wrapper.focus .ts-control {
+    border-color: var(--accent);
+    box-shadow: none;
+}
+
+.tip-form .ts-control > input {
+    color: var(--ink);
+}
+
+.tip-form .ts-control input::placeholder {
+    color: var(--muted);
+}
+
+.tip-form .ts-dropdown {
+    border: 1px solid var(--border);
+    border-radius: 0 0 2px 2px;
+    background: var(--surface);
+    box-shadow: 0 0.5rem 1rem -0.4rem var(--shadow);
+    font-family: var(--font-body);
+}
+
+.tip-form .ts-dropdown .option,
+.tip-form .ts-dropdown .no-results,
+.tip-form .ts-dropdown .create {
+    padding: 0.5rem 0.65rem;
+    color: var(--ink);
+}
+
+.tip-form .ts-dropdown .optgroup-header {
+    background: var(--bg);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.tip-form .ts-dropdown .active {
+    background: var(--bg);
+    color: var(--ink);
+}
+
+.tip-form .ts-dropdown .create {
+    color: var(--link);
 }
 
 button,
