@@ -66,7 +66,7 @@
     <ul class="tip-list">
         {% for tip in tips %}
             <li class="tip-list__item">
-                <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
+                <a href="{{ path('tip_show', { slug: tip.slug }) }}">{{ tip.publishedTitle }}</a>
                 <div class="tip-list__meta">
                     <span>{{ tip.type.value }}</span>
                     {% if tip.vehicle %}

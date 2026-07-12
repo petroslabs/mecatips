@@ -13,6 +13,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TipRepository::class)]
+#[ORM\UniqueConstraint(name: 'uniq_tip_slug', fields: ['slug'])]
 class Tip
 {
     #[ORM\Id]
@@ -40,6 +41,13 @@ class Tip
 
     #[ORM\Column(length: 200, nullable: true)]
     private ?string $publishedTitle = null;
+
+    // Généré une seule fois, à la toute première publication (voir
+    // TipReviewService) — jamais régénéré même si le titre change ensuite
+    // via une modification, pour ne pas casser une URL déjà partagée/indexée.
+    // Reste null tant que le tip n'a jamais été publié.
+    #[ORM\Column(length: 220, nullable: true)]
+    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $publishedContent = null;
@@ -139,6 +147,18 @@ class Tip
     public function setPublishedTitle(?string $publishedTitle): static
     {
         $this->publishedTitle = $publishedTitle;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

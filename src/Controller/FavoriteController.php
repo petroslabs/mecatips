@@ -33,7 +33,7 @@ final class FavoriteController extends AbstractController
         if (!$this->isCsrfTokenValid('favorite-' . $tip->getId(), (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton de sécurité invalide, réessaie.');
 
-            return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+            return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
         }
 
         /** @var User $user */
@@ -52,7 +52,7 @@ final class FavoriteController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+        return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
     }
 
     #[Route('/favorites', name: 'favorite_index', methods: ['GET'])]

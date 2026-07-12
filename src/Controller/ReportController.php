@@ -34,7 +34,7 @@ final class ReportController extends AbstractController
         if (!$this->isCsrfTokenValid('report-' . $tip->getId(), (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton de sécurité invalide, réessaie.');
 
-            return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+            return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
         }
 
         /** @var User $user */
@@ -44,14 +44,14 @@ final class ReportController extends AbstractController
         if ($reason === '') {
             $this->addFlash('error', 'Précise la raison du signalement.');
 
-            return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+            return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
         }
 
         $existing = $reportRepository->findOneBy(['tip' => $tip, 'reporter' => $user, 'status' => ReportStatus::PENDING]);
         if ($existing !== null) {
             $this->addFlash('error', 'Tu as déjà signalé ce tip, le comité va l\'examiner.');
 
-            return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+            return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
         }
 
         $report = (new Report())
@@ -64,7 +64,7 @@ final class ReportController extends AbstractController
 
         $this->addFlash('success', 'Signalement transmis, merci — le comité va l\'examiner.');
 
-        return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+        return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
     }
 
     #[Route('/committee/reports', name: 'committee_reports', methods: ['GET'])]

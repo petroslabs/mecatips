@@ -22,6 +22,7 @@ use App\Repository\TipRepository;
 use App\Repository\UsefulVoteRepository;
 use App\Repository\VehicleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Form\FormError;
@@ -147,9 +148,15 @@ final class TipController extends AbstractController
         return $repository->find((int) $id);
     }
 
-    #[Route('/tips/{id}', name: 'tip_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Tip $tip, UsefulVoteRepository $usefulVoteRepository, FavoriteRepository $favoriteRepository): Response
-    {
+    // priority plus basse que les routes littérales sous /tips/ (mine, new,
+    // recherche, auto...) : sans ça, "/tips/mine" matcherait {slug} en
+    // premier puisque cette route est déclarée avant elles dans la classe.
+    #[Route('/tips/{slug}', name: 'tip_show', methods: ['GET'], priority: -1)]
+    public function show(
+        #[MapEntity(mapping: ['slug' => 'slug'])] Tip $tip,
+        UsefulVoteRepository $usefulVoteRepository,
+        FavoriteRepository $favoriteRepository,
+    ): Response {
         if ($tip->getStatus() !== TipStatus::PUBLISHED) {
             throw $this->createNotFoundException();
         }
@@ -187,7 +194,7 @@ final class TipController extends AbstractController
         if (!$this->isCsrfTokenValid('useful-vote-' . $tip->getId(), (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton de sécurité invalide, réessaie.');
 
-            return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+            return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
         }
 
         /** @var User $user */
@@ -212,7 +219,7 @@ final class TipController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('tip_show', ['id' => $tip->getId()]);
+        return $this->redirectToRoute('tip_show', ['slug' => $tip->getSlug()]);
     }
 
     #[Route('/tips/mine', name: 'tip_mine', methods: ['GET'])]
@@ -283,7 +290,6 @@ final class TipController extends AbstractController
 
                     return $this->render('tip/new.html.twig', [
                         'tipForm' => $form,
-                        'vehicleLabels' => $vehicleRepository->findAllLabels(),
                     ]);
                 }
 
@@ -321,7 +327,6 @@ final class TipController extends AbstractController
 
         return $this->render('tip/new.html.twig', [
             'tipForm' => $form,
-            'vehicleLabels' => $vehicleRepository->findAllLabels(),
         ]);
     }
 

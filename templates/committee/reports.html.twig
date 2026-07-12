@@ -14,7 +14,7 @@
         {% set tip = report.tip %}
         <article class="review-card">
             <div class="review-card__meta">
-                <a href="{{ path('tip_show', { id: tip.id }) }}">{{ tip.publishedTitle }}</a>
+                <a href="{{ path('tip_show', { slug: tip.slug }) }}">{{ tip.publishedTitle }}</a>
                 <span>{{ tip.category.parent.name }} — {{ tip.category.name }}</span>
             </div>
 

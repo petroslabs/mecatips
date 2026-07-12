@@ -15,7 +15,7 @@
                 <li class="tip-list__item">
                     <div class="tip-list__name">
                         {% if tip.status.name == 'PUBLISHED' %}
-                            <a href="{{ path('tip_show', { id: tip.id }) }}">{{ item.title }}</a>
+                            <a href="{{ path('tip_show', { slug: tip.slug }) }}">{{ item.title }}</a>
                         {% else %}
                             <strong>{{ item.title }}</strong>
                         {% endif %}

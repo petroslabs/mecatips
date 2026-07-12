@@ -18,7 +18,7 @@
     </url>
     {% for tip in tips %}
     <url>
-        <loc>{{ url('tip_show', { id: tip.id }) }}</loc>
+        <loc>{{ url('tip_show', { slug: tip.slug }) }}</loc>
         <lastmod>{{ tip.publishedAt|date('Y-m-d') }}</lastmod>
         <changefreq>monthly</changefreq>
     </url>

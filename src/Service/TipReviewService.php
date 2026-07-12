@@ -13,7 +13,9 @@ use App\Enum\NotificationType;
 use App\Enum\RevisionStatus;
 use App\Enum\TipStatus;
 use App\Enum\VoteDecision;
+use App\Repository\TipRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 /**
  * Vote du comité sur une révision et résolution (publication/rejet) une fois
@@ -23,8 +25,11 @@ final class TipReviewService
 {
     private const int QUORUM = 3;
 
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TipRepository $tipRepository,
+        private readonly SluggerInterface $slugger,
+    ) {
     }
 
     public function vote(TipRevision $revision, User $member, VoteDecision $decision, ?string $comment): void
@@ -81,6 +86,10 @@ final class TipReviewService
             $tip->setStatus(TipStatus::PUBLISHED);
             if ($tip->getPublishedAt() === null) {
                 $tip->setPublishedAt($now);
+                // Généré une seule fois, à la toute première publication —
+                // une modification ultérieure du titre ne régénère jamais le
+                // slug, pour ne pas casser une URL déjà partagée/indexée.
+                $tip->setSlug($this->generateUniqueSlug($revision->getTitle()));
             }
 
             $this->notify($tip, $wasAlreadyPublished ? NotificationType::EDIT_PUBLISHED : NotificationType::TIP_PUBLISHED);
@@ -99,6 +108,20 @@ final class TipReviewService
         }
 
         $this->notify($tip, $wasAlreadyPublished ? NotificationType::EDIT_REJECTED : NotificationType::TIP_REJECTED);
+    }
+
+    private function generateUniqueSlug(string $title): string
+    {
+        $base = strtolower((string) $this->slugger->slug($title));
+        $slug = $base;
+        $suffix = 2;
+
+        while ($this->tipRepository->findOneBy(['slug' => $slug]) !== null) {
+            $slug = $base . '-' . $suffix;
+            $suffix++;
+        }
+
+        return $slug;
     }
 
     private function notify(Tip $tip, NotificationType $type): void

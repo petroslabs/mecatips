@@ -14,7 +14,7 @@
         {% for notification in notifications %}
             <li class="notification-list__item {{ notification.isRead ? '' : 'notification-list__item--unread' }}">
                 {% if notification.tip and notification.type.linksToPublishedTip %}
-                    <a href="{{ path('tip_show', { id: notification.tip.id }) }}">{{ notification.type.value }} — {{ notification.tip.publishedTitle }}</a>
+                    <a href="{{ path('tip_show', { slug: notification.tip.slug }) }}">{{ notification.type.value }} — {{ notification.tip.publishedTitle }}</a>
                 {% elseif notification.tip %}
                     <a href="{{ path('tip_mine') }}">{{ notification.type.value }}</a>
                 {% else %}
