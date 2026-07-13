@@ -38,10 +38,6 @@ lint: ## Vérifier la syntaxe des templates Twig et des fichiers YAML
 	php bin/console lint:twig templates
 	php bin/console lint:yaml config translations
 
-.PHONY: test
-test: ## Lancer la suite de tests PHPUnit
-	php bin/phpunit
-
 ## —— Docker (infra symfony_env, dev) ——————————————————————————————————————————
 # compose.override.yaml (stage dev + bind-mount) est auto-chargé tant qu'on
 # ne passe pas -f explicitement — voir la section Production plus bas.
@@ -100,6 +96,15 @@ db-drop: ## Supprimer la base 'mecatips' sur le PostgreSQL partagé
 .PHONY: db-fixtures
 db-fixtures: ## ⚠️  VIDE la base puis la repeuple avec un jeu de données complet (comptes de test, tips à tous les statuts) — local uniquement
 	$(DOCKER_COMP) exec app php bin/console doctrine:fixtures:load --no-interaction
+
+.PHONY: db-test-create
+db-test-create: ## Créer la base 'mecatips_test' (même rôle 'mecatips' que la base de dev, pas un nouveau — juste dbname_suffix "_test")
+	cd ../symfony_env && docker compose exec postgresql sh -c "psql -U \$$POSTGRES_USER -d postgres -v ON_ERROR_STOP=1 -c \"CREATE DATABASE mecatips_test OWNER mecatips;\""
+
+.PHONY: test
+test: ## Lance la suite de tests (migre d'abord le schéma de la base de test)
+	$(DOCKER_COMP) exec -e APP_ENV=test app php bin/console doctrine:migrations:migrate --no-interaction
+	$(DOCKER_COMP) exec -e APP_ENV=test app php bin/phpunit
 	@echo ""
 	@echo "$(GREEN)✅ Base repeuplée — mot de passe pour tous les comptes de test : password123$(RESET)"
 	@echo "$(CYAN)   admin@mecatips.test (admin) · amara/bruno/chloe@mecatips.test (comité)$(RESET)"
