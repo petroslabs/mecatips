@@ -1,0 +1,18 @@
+when@prod:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        options:
+            # Add request headers, cookies, IP address and the authenticated user
+            # see https://docs.sentry.io/platforms/php/data-management/data-collected/ for more info
+            # send_default_pii: true
+            ignore_exceptions:
+                - 'Symfony\Component\ErrorHandler\Error\FatalError'
+                - 'Symfony\Component\Debug\Exception\FatalErrorException'
+            # Défaut SDK (2s) trop court : la résolution DNS vers l'endpoint
+            # Sentry EU (ingest.de.sentry.io) prend ~4s depuis notre infra,
+            # ce qui faisait échouer silencieusement chaque envoi (le SDK
+            # rend un Result "success" avec event=null sur timeout curl, sans
+            # remonter d'erreur exploitable — trouvé en traçant un logger
+            # PSR-3 dédié sur le client Sentry).
+            http_connect_timeout: 5
+            http_timeout: 10

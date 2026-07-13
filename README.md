@@ -134,6 +134,7 @@ cd ../mecatips
 #    REDIS_URL="redis://:<REDIS_PASSWORD>@symfony_env_redis:6379"
 #    MAILER_DSN="<vrai SMTP>"
 #    APP_SECRET=<valeur forte, ex: openssl rand -hex 16>
+#    SENTRY_DSN="<DSN du projet Sentry, optionnel — voir section Monitoring>"
 
 # 3. .env.docker (non versionné, copié depuis .env.docker.example) avec le vrai domaine
 cp .env.docker.example .env.docker
@@ -210,6 +211,7 @@ templates/
 assets/styles/                 # Tokens DA "brut/vécu" (palette, polices, textures)
 assets/controllers/            # Contrôleurs Stimulus (thème, autocomplete...)
 public/robots.txt              # Autorise l'indexation, référence le sitemap
+config/packages/sentry.yaml    # Monitoring d'erreurs (prod uniquement, no-op sans SENTRY_DSN)
 ```
 
 ## SEO
@@ -224,6 +226,22 @@ public/robots.txt              # Autorise l'indexation, référence le sitemap
   (recherche libre, filtres).
 - Pages transactionnelles (connexion, inscription, soumission, mes tips,
   comité, admin) en `noindex, nofollow`.
+
+## Monitoring
+
+Suivi d'erreurs via [Sentry](https://sentry.io) (`sentry/sentry-symfony`,
+`config/packages/sentry.yaml`), actif uniquement en prod — le bundle n'est
+même pas enregistré en dev/test (`config/bundles.php`), donc zéro overhead
+et zéro compte requis pour développer en local. Sans `SENTRY_DSN` renseigné,
+le SDK reste un no-op silencieux : le monitoring est donc strictement
+optionnel, même en prod.
+
+> ⚠️ `http_connect_timeout`/`http_timeout` sont relevés au-delà des défauts
+> du SDK (2s/5s) : la résolution DNS vers l'endpoint Sentry EU
+> (`ingest.de.sentry.io`) a été mesurée à ~4s depuis notre infra, ce qui
+> faisait échouer silencieusement chaque envoi (le SDK renvoie un succès
+> avec un événement `null` sur timeout curl, sans lever d'erreur visible).
+> À revérifier si le SDK ou l'infra réseau changent.
 
 ## Modèle collaboratif
 
