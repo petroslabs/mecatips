@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, iconv, pdo, pdo_pgsql
+          coverage: none
+          tools: composer:v2
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Validate composer.json
+        run: composer validate --no-check-publish
+
+      - name: Check PHP syntax
+        run: find src tests -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Lint Twig templates
+        run: php bin/console lint:twig templates
+
+      - name: Lint YAML config
+        run: php bin/console lint:yaml config translations
+
+      - name: Lint container
+        run: php bin/console lint:container
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: app
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      APP_ENV: test
+      APP_SECRET: ci-secret
+      # doctrine.yaml (when@test) ajoute automatiquement le suffixe "_test" au
+      # nom de la base — pas besoin de le préciser ici, ni de créer la base
+      # "app_test" à l'avance (doctrine:database:create s'en charge).
+      DATABASE_URL: postgresql://app:app@127.0.0.1:5432/app?serverVersion=17&charset=utf8
+      REDIS_URL: redis://127.0.0.1:6379
+      MAILER_DSN: null://null
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, iconv, pdo, pdo_pgsql
+          coverage: none
+          tools: composer:v2
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Create test database
+        run: php bin/console doctrine:database:create --if-not-exists
+
+      - name: Run migrations
+        run: php bin/console doctrine:migrations:migrate --no-interaction
+
+      - name: Run test suite
+        run: php bin/phpunit
