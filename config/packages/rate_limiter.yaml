@@ -9,3 +9,13 @@ framework:
             policy: sliding_window
             limit: 5
             interval: '1 hour'
+
+        # Anti-spam sur l'inscription (`/register`) : par IP puisqu'il n'y a
+        # pas encore de compte à cette étape. Compte chaque tentative
+        # soumise, valide ou non — contrairement à tip_submission, un bot qui
+        # flood le formulaire avec des données invalides doit être arrêté
+        # aussi, pas seulement une création de compte réussie.
+        registration:
+            policy: sliding_window
+            limit: 10
+            interval: '1 hour'

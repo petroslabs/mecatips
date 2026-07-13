@@ -15,6 +15,39 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class AuthAndTipSubmissionTest extends WebTestCase
 {
+    /**
+     * Le quota du rate limiter (Redis) n'est pas remis à zéro par le
+     * rollback DAMA entre les tests — une IP unique par exécution évite
+     * qu'un run précédent (ou un test voisin) laisse le test suivant
+     * démarrer avec un quota déjà partiellement consommé.
+     */
+    public function testRegistrationIsRateLimitedByIp(): void
+    {
+        $client = static::createClient();
+        $client->setServerParameter('REMOTE_ADDR', uniqid('test-ip-', true));
+
+        for ($i = 1; $i <= 10; ++$i) {
+            $crawler = $client->request('GET', '/register');
+            $form = $crawler->selectButton('Créer mon compte')->form([
+                'registration_form[email]' => '',
+                'registration_form[username]' => '',
+                'registration_form[plainPassword]' => '',
+            ]);
+            $client->submit($form);
+            self::assertResponseStatusCodeSame(422, sprintf('La tentative n°%d ne doit pas être bloquée par le rate limiter.', $i));
+        }
+
+        $crawler = $client->request('GET', '/register');
+        $form = $crawler->selectButton('Créer mon compte')->form([
+            'registration_form[email]' => '',
+            'registration_form[username]' => '',
+            'registration_form[plainPassword]' => '',
+        ]);
+        $crawler = $client->submit($form);
+
+        self::assertGreaterThan(0, $crawler->filter('.flash--error')->count());
+    }
+
     public function testRegistrationCreatesAccountAndLogsInAutomatically(): void
     {
         $client = static::createClient();
