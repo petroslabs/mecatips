@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité — MécaTips{% endblock %}
+{% block meta_description %}Politique de confidentialité de MécaTips : données collectées, finalités, durée de conservation, droits RGPD.{% endblock %}
+
+{% block body %}
+    <article class="legal-page">
+        <h1>Politique de confidentialité</h1>
+
+        <h2>Responsable du traitement</h2>
+        <p>
+            PetrosLabs, éditeur de MécaTips —
+            <a href="mailto:petroslabs@proton.me">petroslabs@proton.me</a>.
+        </p>
+
+        <h2>Données collectées</h2>
+        <table class="legal-table">
+            <thead>
+                <tr>
+                    <th>Donnée</th>
+                    <th>Quand</th>
+                    <th>Pourquoi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Email, pseudo</td>
+                    <td>Inscription</td>
+                    <td>Identifier le compte, contacter en cas de besoin (ex. mot de passe oublié)</td>
+                </tr>
+                <tr>
+                    <td>Mot de passe</td>
+                    <td>Inscription</td>
+                    <td>Authentification — stocké haché, jamais en clair, jamais consultable même par l'éditeur</td>
+                </tr>
+                <tr>
+                    <td>Adresse IP</td>
+                    <td>Inscription, soumission d'un tip</td>
+                    <td>Anti-spam (limite de tentatives par heure) — donnée ephémère, jamais enregistrée en base, conservée le temps de la fenêtre glissante (1h) puis expirée automatiquement</td>
+                </tr>
+                <tr>
+                    <td>Tips, votes, favoris, signalements</td>
+                    <td>Utilisation du service</td>
+                    <td>Fonctionnement du site (contenu, classement, notifications)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Base légale</h2>
+        <p>
+            Exécution du contrat (fourniture du service demandé lors de la
+            création d'un compte) pour l'email/pseudo/mot de passe et le
+            contenu que tu soumets ; intérêt légitime (sécurité, lutte
+            anti-spam) pour l'adresse IP.
+        </p>
+
+        <h2>Durée de conservation</h2>
+        <p>
+            Les données du compte sont conservées tant que le compte existe.
+            Tu peux en demander la suppression à tout moment (voir
+            "Tes droits" ci-dessous). L'adresse IP utilisée pour l'anti-spam
+            n'est jamais stockée en base de données — elle transite
+            uniquement par un compteur temporaire, expiré automatiquement
+            après une heure.
+        </p>
+
+        <h2>Cookies</h2>
+        <p>
+            Un seul cookie est utilisé : celui de session, strictement
+            nécessaire pour rester connecté à ton compte — il ne sert à
+            aucun suivi ni mesure d'audience. Le thème clair/sombre choisi
+            est mémorisé dans le stockage local de ton navigateur
+            (<code>localStorage</code>), qui n'est jamais transmis au
+            serveur. Aucun cookie publicitaire, aucun outil d'analyse
+            d'audience tiers (Google Analytics ou équivalent) n'est utilisé
+            sur MécaTips.
+        </p>
+
+        <h2>Destinataires et hébergement</h2>
+        <p>
+            Tes données ne sont ni vendues ni partagées avec des tiers à des
+            fins commerciales. Elles sont hébergées chez
+            <a href="https://www.infomaniak.com" target="_blank" rel="noopener">Infomaniak</a>,
+            en Suisse — un pays reconnu par la Commission européenne comme
+            assurant un niveau de protection adéquat des données
+            personnelles.
+        </p>
+
+        <h2>Sécurité</h2>
+        <p>
+            Le site est servi exclusivement en HTTPS. Les mots de passe sont
+            hachés avec un algorithme moderne (jamais stockés en clair).
+        </p>
+
+        <h2>Tes droits</h2>
+        <p>
+            Conformément au RGPD, tu disposes d'un droit d'accès, de
+            rectification, d'effacement, de limitation et de portabilité
+            sur tes données, ainsi que du droit de t'opposer à leur
+            traitement. Pour les exercer, écris à
+            <a href="mailto:petroslabs@proton.me">petroslabs@proton.me</a>.
+            Tu peux aussi introduire une réclamation auprès de la CNIL
+            (<a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>).
+        </p>
+    </article>
+{% endblock %}

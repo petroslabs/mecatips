@@ -16,6 +16,18 @@
         <loc>{{ url('tip_search') }}</loc>
         <changefreq>weekly</changefreq>
     </url>
+    <url>
+        <loc>{{ url('legal_notice') }}</loc>
+        <changefreq>yearly</changefreq>
+    </url>
+    <url>
+        <loc>{{ url('legal_terms') }}</loc>
+        <changefreq>yearly</changefreq>
+    </url>
+    <url>
+        <loc>{{ url('legal_privacy') }}</loc>
+        <changefreq>yearly</changefreq>
+    </url>
     {% for tip in tips %}
     <url>
         <loc>{{ url('tip_show', { slug: tip.slug }) }}</loc>

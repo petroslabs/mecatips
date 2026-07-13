@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales — MécaTips{% endblock %}
+{% block meta_description %}Mentions légales de MécaTips : éditeur, directeur de publication, hébergeur.{% endblock %}
+
+{% block body %}
+    <article class="legal-page">
+        <h1>Mentions légales</h1>
+
+        <h2>Éditeur du site</h2>
+        <p>
+            MécaTips est édité, à titre non professionnel, par PetrosLabs.
+            Conformément à l'article 6-III de la loi n° 2004-575 du 21 juin
+            2004 pour la confiance dans l'économie numérique, les
+            coordonnées personnelles de l'éditeur ne sont pas rendues
+            publiques mais sont connues de l'hébergeur du site (voir
+            ci-dessous).
+        </p>
+        <p>Contact : <a href="mailto:petroslabs@proton.me">petroslabs@proton.me</a></p>
+
+        <h2>Directeur de la publication</h2>
+        <p>PetrosLabs, éditeur du site.</p>
+
+        <h2>Hébergement</h2>
+        <p>
+            Infomaniak Network SA<br>
+            Rue Eugène-Marziano 25<br>
+            1227 Les Acacias (Genève), Suisse<br>
+            Registre du commerce de Genève : CHE-103.167.648<br>
+            <a href="https://www.infomaniak.com" target="_blank" rel="noopener">infomaniak.com</a>
+        </p>
+
+        <h2>Propriété intellectuelle</h2>
+        <p>
+            La structure, la mise en forme et le code du site sont la
+            propriété de l'éditeur. Le contenu des tips est fourni par les
+            contributeurs qui les soumettent, sous leur responsabilité — voir
+            les <a href="{{ path('legal_terms') }}">conditions générales
+            d'utilisation</a>.
+        </p>
+
+        <h2>Responsabilité</h2>
+        <p>
+            Les tips publiés sur MécaTips sont des conseils communautaires,
+            relus par un comité de contributeurs avant publication mais sans
+            garantie professionnelle. Voir le détail dans les
+            <a href="{{ path('legal_terms') }}">CGU</a>.
+        </p>
+
+        <h2>Données personnelles</h2>
+        <p>
+            Le traitement des données personnelles (compte, connexion) est
+            détaillé dans la <a href="{{ path('legal_privacy') }}">politique
+            de confidentialité</a>.
+        </p>
+    </article>
+{% endblock %}

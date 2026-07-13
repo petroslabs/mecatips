@@ -16,6 +16,12 @@
                 {{ form_row(registrationForm.username) }}
                 {{ form_row(registrationForm.plainPassword) }}
 
+                <p class="form-legal-notice">
+                    En créant un compte, tu acceptes les
+                    <a href="{{ path('legal_terms') }}">CGU</a> et notre
+                    <a href="{{ path('legal_privacy') }}">politique de confidentialité</a>.
+                </p>
+
                 <button type="submit">Créer mon compte</button>
             {{ form_end(registrationForm) }}
         </div>
