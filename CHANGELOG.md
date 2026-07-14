@@ -7,6 +7,7 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/).
 ## [Non publié]
 
 ### Ajouté
+- Pages d'erreur stylisées (404, 403, 500, et un gabarit générique pour le reste — 400, 429, 503...), `templates/bundles/TwigBundle/Exception/`. Gabarit volontairement autonome plutôt qu'une extension de `base.html.twig` : si un 500 vient d'une base de données injoignable, le header applicatif (compteur de notifications, menus liés à `app.user`) qui interroge la base planterait à son tour, empêchant Symfony de rendre la page d'erreur elle-même. Ne dépend que du routeur et de l'asset mapper (jamais de la base), reprend la palette/typo/carte inclinée de la DA "brut/vécu".
 - Rédaction du `ROADMAP.md` : vision produit, modèle collaboratif (soumission/vote comité), structuration du contenu, base de véhicules communautaire, ranking, direction artistique.
 - Choix de la direction artistique : piste "brut / vécu" (fiche d'atelier, tampon encreur, annotation manuscrite), palette et typographies définies.
 - Modèle de données initial : entités Doctrine `User`, `Category`, `Vehicle`, `Tip`, `TipRevision`, `CommitteeVote`, `Tag`, `UsefulVote`, `Report` (+ enums associés) et repositories. `Tip`/`TipRevision` séparent le contenu publié du contenu en cours de validation, pour qu'une modification n'écrase pas la version visible tant que le comité n'a pas voté.

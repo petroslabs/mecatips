@@ -1,0 +1,8 @@
+{# Gabarit générique — utilisé pour tout code HTTP sans template dédié
+   (400, 405, 429, 503...), Symfony ne trouvant pas d'error{status_code}.html.twig. #}
+{% extends 'bundles/TwigBundle/Exception/_layout.html.twig' %}
+
+{% block title %}Erreur {{ status_code }} — MécaTips{% endblock %}
+{% block code %}{{ status_code }}{% endblock %}
+{% block heading %}Une erreur est survenue{% endblock %}
+{% block message %}Cette requête n'a pas pu aboutir. Retourne à l'accueil et réessaie.{% endblock %}
